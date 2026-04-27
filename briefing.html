@@ -1,0 +1,853 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Novo Projeto — Briefing</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@400;500&family=Inter:wght@300;400;500&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg: #09090b;
+      --bg2: #0f0f12;
+      --bg3: #161619;
+      --bg4: #1c1c20;
+      --border: rgba(255,255,255,0.07);
+      --border-active: rgba(255,255,255,0.18);
+      --text: #ededed;
+      --text-muted: #777;
+      --text-dim: #444;
+      --accent: #c8f564;
+      --accent-dim: rgba(200,245,100,0.1);
+      --accent-glow: rgba(200,245,100,0.15);
+      --red: #ff5c5c;
+      --red-dim: rgba(255,92,92,0.1);
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    /* Grain overlay */
+    body::before {
+      content: '';
+      position: fixed; inset: 0; z-index: 0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.035'/%3E%3C/svg%3E");
+      pointer-events: none;
+    }
+
+    /* ── HEADER ── */
+    header {
+      position: sticky; top: 0; z-index: 50;
+      background: rgba(9,9,11,0.88);
+      backdrop-filter: blur(20px);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .header-inner {
+      max-width: 860px; margin: 0 auto;
+      padding: 0 2rem; height: 60px;
+      display: flex; align-items: center; justify-content: space-between;
+    }
+
+    .logo {
+      font-family: 'Syne', sans-serif; font-size: 13px; font-weight: 700;
+      letter-spacing: 0.1em; text-transform: uppercase;
+      color: var(--text); text-decoration: none;
+      display: flex; align-items: center; gap: 8px;
+    }
+    .logo-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--accent); }
+
+    .header-badge {
+      font-family: 'IBM Plex Mono', monospace; font-size: 11px;
+      color: var(--text-dim); letter-spacing: 0.05em;
+    }
+
+    /* ── MAIN ── */
+    main {
+      max-width: 860px; margin: 0 auto;
+      padding: 56px 2rem 100px;
+      position: relative; z-index: 1;
+    }
+
+    /* Page title */
+    .page-header { margin-bottom: 48px; }
+
+    .page-tag {
+      font-family: 'IBM Plex Mono', monospace; font-size: 11px;
+      color: var(--accent); letter-spacing: 0.1em; text-transform: uppercase;
+      margin-bottom: 14px; display: flex; align-items: center; gap: 8px;
+    }
+    .page-tag::before {
+      content: ''; width: 24px; height: 1px; background: var(--accent);
+    }
+
+    .page-title {
+      font-family: 'Syne', sans-serif; font-size: clamp(28px, 5vw, 44px);
+      font-weight: 800; line-height: 1.1; letter-spacing: -0.02em;
+      color: var(--text); margin-bottom: 14px;
+    }
+
+    .page-desc { font-size: 14px; color: var(--text-muted); line-height: 1.7; }
+
+    /* ── FORM ── */
+    form { display: flex; flex-direction: column; gap: 0; }
+
+    /* Section block */
+    .form-section {
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      overflow: hidden;
+      margin-bottom: 16px;
+      background: var(--bg2);
+      transition: border-color 0.2s;
+    }
+    .form-section:focus-within { border-color: var(--border-active); }
+
+    .section-header {
+      padding: 20px 24px 18px;
+      border-bottom: 1px solid var(--border);
+      display: flex; align-items: center; gap: 14px;
+    }
+
+    .section-num {
+      font-family: 'IBM Plex Mono', monospace; font-size: 11px;
+      color: var(--text-dim); letter-spacing: 0.05em;
+      flex-shrink: 0;
+    }
+
+    .section-title {
+      font-family: 'Syne', sans-serif; font-size: 13px; font-weight: 700;
+      letter-spacing: 0.06em; text-transform: uppercase; color: var(--text-muted);
+    }
+
+    .section-optional {
+      margin-left: auto; font-size: 10px; color: var(--text-dim);
+      letter-spacing: 0.05em; text-transform: uppercase;
+      border: 1px solid var(--border); border-radius: 4px; padding: 2px 7px;
+    }
+
+    .section-body { padding: 20px 24px 24px; display: flex; flex-direction: column; gap: 18px; }
+
+    /* Fields */
+    .field-row { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+    @media (max-width: 600px) { .field-row { grid-template-columns: 1fr; } }
+
+    .field { display: flex; flex-direction: column; gap: 7px; }
+
+    label {
+      font-size: 12px; font-weight: 500; color: var(--text-muted);
+      letter-spacing: 0.04em;
+    }
+    label .req { color: var(--accent); margin-left: 3px; }
+
+    input[type="text"],
+    input[type="email"],
+    textarea,
+    select {
+      font-family: 'Inter', sans-serif; font-size: 14px;
+      color: var(--text); background: var(--bg3);
+      border: 1px solid var(--border); border-radius: 8px;
+      padding: 11px 14px; outline: none; width: 100%;
+      transition: border-color 0.15s, background 0.15s;
+      -webkit-appearance: none;
+    }
+
+    input[type="text"]:focus,
+    input[type="email"]:focus,
+    textarea:focus,
+    select:focus {
+      border-color: rgba(200,245,100,0.35);
+      background: var(--bg4);
+    }
+
+    input::placeholder, textarea::placeholder { color: var(--text-dim); }
+
+    textarea { resize: vertical; min-height: 96px; line-height: 1.6; }
+
+    select {
+      cursor: pointer;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%23555' stroke-width='2'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right 14px center;
+      padding-right: 36px;
+    }
+    select option { background: #1c1c20; }
+
+    /* Tom de voz — pill buttons */
+    .tom-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+      gap: 8px;
+    }
+
+    .tom-option { position: relative; }
+    .tom-option input[type="checkbox"] { position: absolute; opacity: 0; width: 0; height: 0; }
+
+    .tom-label {
+      display: flex; align-items: center; gap: 8px;
+      padding: 10px 14px; border-radius: 8px;
+      border: 1px solid var(--border); background: var(--bg3);
+      cursor: pointer; font-size: 13px; color: var(--text-muted);
+      transition: all 0.15s; user-select: none;
+    }
+    .tom-label:hover { border-color: var(--border-active); color: var(--text); }
+    .tom-option input:checked + .tom-label {
+      border-color: var(--accent);
+      background: var(--accent-dim);
+      color: var(--accent);
+    }
+    .tom-icon { font-size: 15px; }
+
+    /* Objetivo — radio cards */
+    .obj-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+      gap: 8px;
+    }
+
+    .obj-option { position: relative; }
+    .obj-option input[type="radio"] { position: absolute; opacity: 0; width: 0; height: 0; }
+
+    .obj-label {
+      display: flex; flex-direction: column; gap: 6px;
+      padding: 14px 16px; border-radius: 8px;
+      border: 1px solid var(--border); background: var(--bg3);
+      cursor: pointer; transition: all 0.15s; user-select: none;
+    }
+    .obj-label:hover { border-color: var(--border-active); }
+    .obj-option input:checked + .obj-label {
+      border-color: var(--accent);
+      background: var(--accent-dim);
+    }
+    .obj-title {
+      font-family: 'Syne', sans-serif; font-size: 13px; font-weight: 600;
+      color: var(--text);
+    }
+    .obj-option input:checked + .obj-label .obj-title { color: var(--accent); }
+    .obj-sub { font-size: 11px; color: var(--text-dim); line-height: 1.5; }
+
+    /* Urgência — range */
+    .range-wrap { display: flex; flex-direction: column; gap: 10px; }
+    .range-labels { display: flex; justify-content: space-between; font-size: 11px; color: var(--text-dim); }
+
+    input[type="range"] {
+      -webkit-appearance: none; width: 100%; height: 4px;
+      background: var(--bg4); border-radius: 2px; outline: none;
+      border: none; padding: 0;
+    }
+    input[type="range"]::-webkit-slider-thumb {
+      -webkit-appearance: none; width: 18px; height: 18px;
+      border-radius: 50%; background: var(--accent);
+      cursor: pointer; border: 3px solid var(--bg);
+      box-shadow: 0 0 0 1px var(--accent);
+      transition: transform 0.1s;
+    }
+    input[type="range"]::-webkit-slider-thumb:hover { transform: scale(1.2); }
+    .range-value {
+      font-family: 'IBM Plex Mono', monospace; font-size: 12px;
+      color: var(--accent); text-align: center;
+    }
+
+    /* Referências URL */
+    .ref-list { display: flex; flex-direction: column; gap: 8px; }
+    .ref-item { display: flex; gap: 8px; }
+    .ref-item input { flex: 1; }
+    .btn-remove-ref {
+      width: 38px; height: 38px; border-radius: 7px;
+      background: var(--red-dim); border: 1px solid rgba(255,92,92,0.2);
+      color: var(--red); cursor: pointer; font-size: 16px;
+      display: flex; align-items: center; justify-content: center;
+      transition: all 0.15s; flex-shrink: 0;
+    }
+    .btn-remove-ref:hover { background: rgba(255,92,92,0.2); }
+    .btn-add-ref {
+      font-family: 'Inter', sans-serif; font-size: 12px; font-weight: 500;
+      color: var(--text-muted); background: transparent;
+      border: 1px dashed var(--border); border-radius: 7px;
+      padding: 9px 16px; cursor: pointer; transition: all 0.15s;
+      display: flex; align-items: center; gap: 6px; width: fit-content;
+    }
+    .btn-add-ref:hover { border-color: var(--border-active); color: var(--text); }
+
+    /* ── SUBMIT ── */
+    .submit-area {
+      margin-top: 8px;
+      display: flex; align-items: center; justify-content: space-between;
+      gap: 16px; flex-wrap: wrap;
+    }
+
+    .submit-hint { font-size: 12px; color: var(--text-dim); line-height: 1.6; max-width: 400px; }
+    .submit-hint strong { color: var(--text-muted); }
+
+    .btn-submit {
+      font-family: 'Syne', sans-serif; font-size: 14px; font-weight: 700;
+      letter-spacing: 0.04em; text-transform: uppercase;
+      color: #000; background: var(--accent);
+      border: none; border-radius: 10px;
+      padding: 14px 32px; cursor: pointer;
+      transition: all 0.15s; white-space: nowrap;
+      position: relative; overflow: hidden;
+    }
+    .btn-submit:hover { background: #d4ff6e; transform: translateY(-1px); box-shadow: 0 8px 24px rgba(200,245,100,0.25); }
+    .btn-submit:active { transform: translateY(0); }
+    .btn-submit:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+
+    /* Loading state */
+    .btn-submit .btn-text { transition: opacity 0.2s; }
+    .btn-submit.loading .btn-text { opacity: 0; }
+    .btn-submit .spinner {
+      position: absolute; inset: 0; display: none;
+      align-items: center; justify-content: center;
+    }
+    .btn-submit.loading .spinner { display: flex; }
+    .spinner::after {
+      content: ''; width: 18px; height: 18px; border-radius: 50%;
+      border: 2px solid rgba(0,0,0,0.3); border-top-color: #000;
+      animation: spin 0.6s linear infinite;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    /* Toast de sucesso */
+    .toast {
+      position: fixed; bottom: 32px; left: 50%; transform: translateX(-50%) translateY(80px);
+      background: var(--bg3); border: 1px solid rgba(200,245,100,0.3);
+      border-radius: 12px; padding: 16px 24px;
+      display: flex; align-items: center; gap: 12px;
+      font-size: 14px; color: var(--text);
+      box-shadow: 0 24px 48px rgba(0,0,0,0.6);
+      z-index: 200; opacity: 0;
+      transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+    .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+    .toast-icon { font-size: 20px; }
+    .toast-title { font-weight: 600; color: var(--accent); }
+    .toast-sub { font-size: 12px; color: var(--text-muted); margin-top: 2px; }
+
+    /* Toast de erro */
+    .toast.error { border-color: rgba(255,92,92,0.3); }
+    .toast.error .toast-title { color: var(--red); }
+
+    /* Scrollbar */
+    ::-webkit-scrollbar { width: 5px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.08); border-radius: 3px; }
+
+    /* Progress bar */
+    .progress-bar {
+      position: fixed; top: 0; left: 0; z-index: 100;
+      height: 2px; background: var(--accent);
+      transition: width 0.3s ease;
+      box-shadow: 0 0 10px var(--accent-glow);
+    }
+  </style>
+</head>
+<body>
+
+<div class="progress-bar" id="progressBar" style="width:0%"></div>
+
+<header>
+  <div class="header-inner">
+    <a class="logo" href="index.html">
+      <span class="logo-dot"></span>
+      Banco de Templates
+    </a>
+    <span class="header-badge">novo projeto</span>
+  </div>
+</header>
+
+<main>
+  <div class="page-header">
+    <div class="page-tag">Briefing do cliente</div>
+    <h1 class="page-title">Novo projeto de<br/>Landing Page</h1>
+    <p class="page-desc">Preencha as informações abaixo. Quanto mais detalhes, melhor a copy e o template gerados.</p>
+  </div>
+
+  <form id="briefingForm" novalidate>
+
+    <!-- 01 · DADOS DO CLIENTE -->
+    <div class="form-section">
+      <div class="section-header">
+        <span class="section-num">01</span>
+        <span class="section-title">Dados do Cliente</span>
+      </div>
+      <div class="section-body">
+        <div class="field-row">
+          <div class="field">
+            <label for="nomeCliente">Nome do cliente <span class="req">*</span></label>
+            <input type="text" id="nomeCliente" name="nomeCliente" placeholder="Ex: João Silva" required />
+          </div>
+          <div class="field">
+            <label for="nomeEmpresa">Nome da empresa <span class="req">*</span></label>
+            <input type="text" id="nomeEmpresa" name="nomeEmpresa" placeholder="Ex: Clínica Sorrir" required />
+          </div>
+        </div>
+        <div class="field-row">
+          <div class="field">
+            <label for="segmento">Segmento / Nicho <span class="req">*</span></label>
+            <input type="text" id="segmento" name="segmento" placeholder="Ex: Odontologia, SaaS, Barbearia..." required />
+          </div>
+          <div class="field">
+            <label for="accountResponsavel">Account responsável <span class="req">*</span></label>
+            <input type="text" id="accountResponsavel" name="accountResponsavel" placeholder="Seu nome" required />
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 02 · PRODUTO / SERVIÇO -->
+    <div class="form-section">
+      <div class="section-header">
+        <span class="section-num">02</span>
+        <span class="section-title">Produto ou Serviço</span>
+      </div>
+      <div class="section-body">
+        <div class="field">
+          <label for="produtoServico">O que será promovido na LP? <span class="req">*</span></label>
+          <textarea id="produtoServico" name="produtoServico" placeholder="Descreva o produto ou serviço. Ex: Consulta odontológica de avaliação gratuita para implantes dentários." rows="3" required></textarea>
+        </div>
+        <div class="field-row">
+          <div class="field">
+            <label for="proposta">Proposta de valor principal <span class="req">*</span></label>
+            <input type="text" id="proposta" name="proposta" placeholder="Ex: Sorriso perfeito sem dor e sem espera" required />
+          </div>
+          <div class="field">
+            <label for="diferenciais">Diferenciais competitivos</label>
+            <input type="text" id="diferenciais" name="diferenciais" placeholder="Ex: 15 anos de experiência, tecnologia digital" />
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 03 · PÚBLICO-ALVO -->
+    <div class="form-section">
+      <div class="section-header">
+        <span class="section-num">03</span>
+        <span class="section-title">Público-alvo</span>
+      </div>
+      <div class="section-body">
+        <div class="field-row">
+          <div class="field">
+            <label for="publicoAlvo">Quem é o cliente ideal? <span class="req">*</span></label>
+            <input type="text" id="publicoAlvo" name="publicoAlvo" placeholder="Ex: Mulheres 35-55 anos, classe B/C, SP" required />
+          </div>
+          <div class="field">
+            <label for="dorPrincipal">Maior dor / problema que resolve</label>
+            <input type="text" id="dorPrincipal" name="dorPrincipal" placeholder="Ex: Vergonha do sorriso, medo de dentista" />
+          </div>
+        </div>
+        <div class="field">
+          <label for="objecoes">Principais objeções que o público tem</label>
+          <input type="text" id="objecoes" name="objecoes" placeholder="Ex: Preço alto, não sabe se funciona, sem tempo" />
+        </div>
+      </div>
+    </div>
+
+    <!-- 04 · TOM DE VOZ -->
+    <div class="form-section">
+      <div class="section-header">
+        <span class="section-num">04</span>
+        <span class="section-title">Tom de Voz</span>
+      </div>
+      <div class="section-body">
+        <div class="field">
+          <label>Selecione os tons que combinam com a marca <span class="req">*</span></label>
+          <div class="tom-grid">
+            <div class="tom-option">
+              <input type="checkbox" id="tom-profissional" name="tom" value="profissional" />
+              <label class="tom-label" for="tom-profissional"><span class="tom-icon">💼</span> Profissional</label>
+            </div>
+            <div class="tom-option">
+              <input type="checkbox" id="tom-acolhedor" name="tom" value="acolhedor" />
+              <label class="tom-label" for="tom-acolhedor"><span class="tom-icon">🤝</span> Acolhedor</label>
+            </div>
+            <div class="tom-option">
+              <input type="checkbox" id="tom-urgente" name="tom" value="urgente e persuasivo" />
+              <label class="tom-label" for="tom-urgente"><span class="tom-icon">⚡</span> Urgente</label>
+            </div>
+            <div class="tom-option">
+              <input type="checkbox" id="tom-tecnico" name="tom" value="técnico" />
+              <label class="tom-label" for="tom-tecnico"><span class="tom-icon">🔬</span> Técnico</label>
+            </div>
+            <div class="tom-option">
+              <input type="checkbox" id="tom-descontraido" name="tom" value="descontraído" />
+              <label class="tom-label" for="tom-descontraido"><span class="tom-icon">😊</span> Descontraído</label>
+            </div>
+            <div class="tom-option">
+              <input type="checkbox" id="tom-luxo" name="tom" value="luxo e exclusividade" />
+              <label class="tom-label" for="tom-luxo"><span class="tom-icon">✨</span> Luxo</label>
+            </div>
+            <div class="tom-option">
+              <input type="checkbox" id="tom-emocional" name="tom" value="emocional" />
+              <label class="tom-label" for="tom-emocional"><span class="tom-icon">❤️</span> Emocional</label>
+            </div>
+            <div class="tom-option">
+              <input type="checkbox" id="tom-direto" name="tom" value="direto ao ponto" />
+              <label class="tom-label" for="tom-direto"><span class="tom-icon">🎯</span> Direto</label>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 05 · OBJETIVO DA LP -->
+    <div class="form-section">
+      <div class="section-header">
+        <span class="section-num">05</span>
+        <span class="section-title">Objetivo da LP</span>
+      </div>
+      <div class="section-body">
+        <div class="field">
+          <label>O que o visitante deve fazer ao chegar na LP? <span class="req">*</span></label>
+          <div class="obj-grid">
+            <div class="obj-option">
+              <input type="radio" id="obj-captura" name="objetivo" value="Captura de leads (formulário)" required />
+              <label class="obj-label" for="obj-captura">
+                <span class="obj-title">Captura de Leads</span>
+                <span class="obj-sub">Preenche formulário, recebe contato</span>
+              </label>
+            </div>
+            <div class="obj-option">
+              <input type="radio" id="obj-vendas" name="objetivo" value="Venda direta (compra/checkout)" />
+              <label class="obj-label" for="obj-vendas">
+                <span class="obj-title">Venda Direta</span>
+                <span class="obj-sub">Clica e vai para checkout/pagamento</span>
+              </label>
+            </div>
+            <div class="obj-option">
+              <input type="radio" id="obj-whatsapp" name="objetivo" value="Contato via WhatsApp" />
+              <label class="obj-label" for="obj-whatsapp">
+                <span class="obj-title">WhatsApp</span>
+                <span class="obj-sub">CTA direciona para conversa no WhatsApp</span>
+              </label>
+            </div>
+            <div class="obj-option">
+              <input type="radio" id="obj-agendamento" name="objetivo" value="Agendamento de consulta/reunião" />
+              <label class="obj-label" for="obj-agendamento">
+                <span class="obj-title">Agendamento</span>
+                <span class="obj-sub">Marca consulta, demo ou reunião</span>
+              </label>
+            </div>
+            <div class="obj-option">
+              <input type="radio" id="obj-institucional" name="objetivo" value="Apresentação institucional" />
+              <label class="obj-label" for="obj-institucional">
+                <span class="obj-title">Institucional</span>
+                <span class="obj-sub">Apresenta a empresa, gera credibilidade</span>
+              </label>
+            </div>
+          </div>
+        </div>
+        <div class="field">
+          <label for="ctaTexto">Sugestão de texto para o botão CTA</label>
+          <input type="text" id="ctaTexto" name="ctaTexto" placeholder="Ex: Quero minha avaliação gratuita" />
+        </div>
+      </div>
+    </div>
+
+    <!-- 06 · IDENTIDADE VISUAL -->
+    <div class="form-section">
+      <div class="section-header">
+        <span class="section-num">06</span>
+        <span class="section-title">Identidade Visual</span>
+        <span class="section-optional">opcional</span>
+      </div>
+      <div class="section-body">
+        <div class="field-row">
+          <div class="field">
+            <label for="corPrimaria">Cor primária da marca</label>
+            <input type="text" id="corPrimaria" name="corPrimaria" placeholder="Ex: #2563EB ou azul royal" />
+          </div>
+          <div class="field">
+            <label for="corSecundaria">Cor secundária / acento</label>
+            <input type="text" id="corSecundaria" name="corSecundaria" placeholder="Ex: #F59E0B ou dourado" />
+          </div>
+        </div>
+        <div class="field">
+          <label>Preferência de tema visual</label>
+          <div class="obj-grid" style="grid-template-columns: repeat(3, 1fr);">
+            <div class="obj-option">
+              <input type="radio" id="tema-escuro" name="temaVisual" value="escuro" />
+              <label class="obj-label" for="tema-escuro">
+                <span class="obj-title">🌑 Escuro</span>
+                <span class="obj-sub">Fundo dark, alto contraste</span>
+              </label>
+            </div>
+            <div class="obj-option">
+              <input type="radio" id="tema-claro" name="temaVisual" value="claro" />
+              <label class="obj-label" for="tema-claro">
+                <span class="obj-title">☀️ Claro</span>
+                <span class="obj-sub">Fundo branco, visual limpo</span>
+              </label>
+            </div>
+            <div class="obj-option">
+              <input type="radio" id="tema-sem-pref" name="temaVisual" value="sem preferência" />
+              <label class="obj-label" for="tema-sem-pref">
+                <span class="obj-title">🎲 Sem Preferência</span>
+                <span class="obj-sub">Claude escolhe o melhor</span>
+              </label>
+            </div>
+          </div>
+        </div>
+        <div class="field">
+          <label>Sites de referência (inspiração visual)</label>
+          <div class="ref-list" id="refList">
+            <div class="ref-item">
+              <input type="text" name="referencias[]" placeholder="https://exemplo.com" />
+              <button type="button" class="btn-remove-ref" onclick="removeRef(this)" style="display:none">×</button>
+            </div>
+          </div>
+          <button type="button" class="btn-add-ref" onclick="addRef()">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 5v14M5 12h14"/></svg>
+            Adicionar referência
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- 07 · OBSERVAÇÕES -->
+    <div class="form-section">
+      <div class="section-header">
+        <span class="section-num">07</span>
+        <span class="section-title">Observações Finais</span>
+        <span class="section-optional">opcional</span>
+      </div>
+      <div class="section-body">
+        <div class="field">
+          <label for="observacoes">Informações adicionais, restrições ou pedidos especiais</label>
+          <textarea id="observacoes" name="observacoes" placeholder="Ex: O cliente não quer mencionar concorrentes. Deve ter seção de depoimentos. Prazo é segunda-feira." rows="4"></textarea>
+        </div>
+        <div class="field">
+          <label>Urgência do projeto</label>
+          <div class="range-wrap">
+            <input type="range" id="urgencia" name="urgencia" min="1" max="5" value="3" oninput="updateUrgency(this.value)" />
+            <div class="range-labels">
+              <span>Sem pressa</span>
+              <span>Normal</span>
+              <span>Urgente</span>
+            </div>
+            <div class="range-value" id="urgencyLabel">⚡ Prioridade normal</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SUBMIT -->
+    <div class="submit-area">
+      <div class="submit-hint">
+        Ao enviar, a <strong>copy da LP será gerada automaticamente</strong> pelo Claude e ficará disponível para sua revisão em instantes.
+      </div>
+      <button type="submit" class="btn-submit" id="submitBtn">
+        <span class="btn-text">Gerar Copy →</span>
+        <span class="spinner"></span>
+      </button>
+    </div>
+
+  </form>
+</main>
+
+<!-- Toast -->
+<div class="toast" id="toast">
+  <span class="toast-icon">✅</span>
+  <div>
+    <div class="toast-title" id="toastTitle">Briefing enviado!</div>
+    <div class="toast-sub" id="toastSub">A copy está sendo gerada. Aguarde a notificação.</div>
+  </div>
+</div>
+
+<script>
+  // ── CONFIGURAÇÃO ──
+  // Substitua pela URL do webhook do seu n8n
+  const WEBHOOK_URL = 'https://SEU_N8N.dominio.com/webhook/briefing-lp';
+
+  // ── PROGRESSO ──
+  function updateProgress() {
+    const fields = document.querySelectorAll('[required]');
+    let filled = 0;
+    fields.forEach(f => {
+      if (f.type === 'radio') {
+        if (document.querySelector(`[name="${f.name}"]:checked`)) filled++;
+      } else if (f.value.trim()) filled++;
+    });
+    // Checkboxes de tom
+    const toms = document.querySelectorAll('[name="tom"]:checked');
+    if (toms.length > 0) filled++;
+
+    const total = fields.length;
+    const pct = Math.min(100, Math.round((filled / total) * 100));
+    document.getElementById('progressBar').style.width = pct + '%';
+  }
+
+  document.querySelectorAll('input, textarea, select').forEach(el => {
+    el.addEventListener('input', updateProgress);
+    el.addEventListener('change', updateProgress);
+  });
+
+  // ── URGÊNCIA ──
+  const urgencyLabels = {
+    1: '😌 Sem pressa — pode demorar',
+    2: '🕐 Baixa prioridade',
+    3: '⚡ Prioridade normal',
+    4: '🔥 Alta prioridade',
+    5: '🚨 URGENTE — precisa hoje'
+  };
+  function updateUrgency(v) {
+    document.getElementById('urgencyLabel').textContent = urgencyLabels[v];
+  }
+
+  // ── REFERÊNCIAS ──
+  function addRef() {
+    const list = document.getElementById('refList');
+    const div = document.createElement('div');
+    div.className = 'ref-item';
+    div.innerHTML = `
+      <input type="text" name="referencias[]" placeholder="https://exemplo.com" />
+      <button type="button" class="btn-remove-ref" onclick="removeRef(this)">×</button>
+    `;
+    list.appendChild(div);
+    // Mostra o botão de remover no primeiro item se tiver mais de um
+    list.querySelectorAll('.btn-remove-ref').forEach(btn => btn.style.display = 'flex');
+  }
+
+  function removeRef(btn) {
+    const list = document.getElementById('refList');
+    btn.closest('.ref-item').remove();
+    if (list.children.length === 1) {
+      list.querySelector('.btn-remove-ref').style.display = 'none';
+    }
+  }
+
+  // ── TOAST ──
+  function showToast(title, sub, isError = false) {
+    const toast = document.getElementById('toast');
+    const icon = toast.querySelector('.toast-icon');
+    document.getElementById('toastTitle').textContent = title;
+    document.getElementById('toastSub').textContent = sub;
+    toast.classList.toggle('error', isError);
+    icon.textContent = isError ? '❌' : '✅';
+    toast.classList.add('show');
+    setTimeout(() => toast.classList.remove('show'), 5000);
+  }
+
+  // ── SUBMIT ──
+  document.getElementById('briefingForm').addEventListener('submit', async function(e) {
+    e.preventDefault();
+
+    // Validação mínima
+    const required = ['nomeCliente', 'nomeEmpresa', 'segmento', 'accountResponsavel',
+                      'produtoServico', 'proposta', 'publicoAlvo'];
+    let valid = true;
+    for (const id of required) {
+      const el = document.getElementById(id);
+      if (!el.value.trim()) {
+        el.style.borderColor = 'rgba(255,92,92,0.5)';
+        el.focus();
+        valid = false;
+        break;
+      } else {
+        el.style.borderColor = '';
+      }
+    }
+
+    const toms = [...document.querySelectorAll('[name="tom"]:checked')].map(c => c.value);
+    if (toms.length === 0) {
+      showToast('Campo obrigatório', 'Selecione pelo menos um tom de voz.', true);
+      return;
+    }
+
+    const objetivo = document.querySelector('[name="objetivo"]:checked');
+    if (!objetivo) {
+      showToast('Campo obrigatório', 'Selecione o objetivo da LP.', true);
+      return;
+    }
+
+    if (!valid) {
+      showToast('Campos obrigatórios', 'Preencha todos os campos marcados com *.', true);
+      return;
+    }
+
+    // Coleta dados
+    const refs = [...document.querySelectorAll('[name="referencias[]"]')]
+      .map(i => i.value.trim()).filter(Boolean);
+
+    const payload = {
+      // Metadados
+      timestamp: new Date().toISOString(),
+      accountResponsavel: document.getElementById('accountResponsavel').value.trim(),
+      status: 'aguardando_geracao_copy',
+
+      // Cliente
+      cliente: {
+        nome: document.getElementById('nomeCliente').value.trim(),
+        empresa: document.getElementById('nomeEmpresa').value.trim(),
+        segmento: document.getElementById('segmento').value.trim(),
+      },
+
+      // Briefing
+      briefing: {
+        produtoServico: document.getElementById('produtoServico').value.trim(),
+        propostaDeValor: document.getElementById('proposta').value.trim(),
+        diferenciais: document.getElementById('diferenciais').value.trim(),
+        publicoAlvo: document.getElementById('publicoAlvo').value.trim(),
+        dorPrincipal: document.getElementById('dorPrincipal').value.trim(),
+        objecoes: document.getElementById('objecoes').value.trim(),
+        tomDeVoz: toms,
+        objetivo: objetivo.value,
+        ctaSugerido: document.getElementById('ctaTexto').value.trim(),
+        observacoes: document.getElementById('observacoes').value.trim(),
+        urgencia: parseInt(document.getElementById('urgencia').value),
+      },
+
+      // Visual
+      visual: {
+        corPrimaria: document.getElementById('corPrimaria').value.trim(),
+        corSecundaria: document.getElementById('corSecundaria').value.trim(),
+        temaVisual: document.querySelector('[name="temaVisual"]:checked')?.value || 'sem preferência',
+        referencias: refs,
+      }
+    };
+
+    // Envia
+    const btn = document.getElementById('submitBtn');
+    btn.disabled = true;
+    btn.classList.add('loading');
+
+    try {
+      const res = await fetch(WEBHOOK_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+      });
+
+      if (res.ok) {
+        showToast('Briefing enviado!', `Copy do projeto "${payload.cliente.empresa}" sendo gerada...`);
+        // Reseta o form após 2s
+        setTimeout(() => {
+          document.getElementById('briefingForm').reset();
+          document.getElementById('progressBar').style.width = '0%';
+          updateUrgency(3);
+        }, 2000);
+      } else {
+        throw new Error('Resposta não OK: ' + res.status);
+      }
+    } catch (err) {
+      console.error(err);
+      showToast('Erro ao enviar', 'Verifique a URL do webhook no n8n e tente novamente.', true);
+    } finally {
+      btn.disabled = false;
+      btn.classList.remove('loading');
+    }
+  });
+
+  // Init
+  updateUrgency(3);
+</script>
+</body>
+</html>
