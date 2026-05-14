@@ -1,0 +1,670 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Revisar LP</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=Inter:wght@300;400;500&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <style>
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    :root{
+      --bg:#09090b;--bg2:#0f0f12;--bg3:#161619;--bg4:#1c1c20;
+      --border:rgba(255,255,255,0.07);--border-act:rgba(255,255,255,0.18);
+      --text:#ededed;--muted:#777;--dim:#444;
+      --accent:#c8f564;--accent-dim:rgba(200,245,100,0.1);
+      --red:#ff5c5c;--red-dim:rgba(255,92,92,0.1);
+      --yellow:#ffd166;--yellow-dim:rgba(255,209,102,0.1);
+      --green:#06d6a0;--green-dim:rgba(6,214,160,0.1);
+    }
+    html,body{height:100%;overflow:hidden}
+    body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);display:flex;flex-direction:column}
+
+    /* ── TOP BAR */
+    .topbar{
+      height:56px;flex-shrink:0;
+      background:rgba(9,9,11,0.95);backdrop-filter:blur(20px);
+      border-bottom:1px solid var(--border);
+      display:flex;align-items:center;padding:0 20px;gap:16px;z-index:100
+    }
+    .topbar-logo{font-family:'Syne',sans-serif;font-size:12px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--text);text-decoration:none;display:flex;align-items:center;gap:6px;flex-shrink:0}
+    .logo-dot{width:5px;height:5px;border-radius:50%;background:var(--accent)}
+    .topbar-sep{width:1px;height:20px;background:var(--border);flex-shrink:0}
+    .project-name{font-size:13px;color:var(--muted);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;flex:1}
+    .status-badge{font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:.08em;text-transform:uppercase;padding:4px 10px;border-radius:5px;flex-shrink:0}
+    .status-badge.revisao{background:var(--yellow-dim);color:var(--yellow);border:1px solid rgba(255,209,102,.25)}
+    .status-badge.aprovada{background:var(--green-dim);color:var(--green);border:1px solid rgba(6,214,160,.25)}
+    .topbar-actions{display:flex;gap:8px;margin-left:auto;flex-shrink:0}
+    .btn-top{font-family:'Inter',sans-serif;font-size:12px;font-weight:500;padding:7px 14px;border-radius:7px;cursor:pointer;transition:all .15s;white-space:nowrap;border:1px solid var(--border);background:var(--bg3);color:var(--muted)}
+    .btn-top:hover{border-color:var(--border-act);color:var(--text)}
+    .btn-top.primary{background:var(--accent);color:#000;border-color:transparent;font-family:'Syne',sans-serif;font-weight:700;letter-spacing:.04em;text-transform:uppercase}
+    .btn-top.primary:hover{background:#d4ff6e}
+    .btn-top.danger{background:var(--red-dim);color:var(--red);border-color:rgba(255,92,92,.25)}
+    .btn-top.danger:hover{background:rgba(255,92,92,.2)}
+
+    /* ── LAYOUT */
+    .workspace{display:flex;flex:1;overflow:hidden}
+
+    /* ── LEFT PANEL — LP PREVIEW */
+    .preview-panel{flex:1;overflow:hidden;position:relative;background:#000}
+
+    /* Mode toggle */
+    .mode-toggle{
+      position:absolute;top:16px;left:50%;transform:translateX(-50%);z-index:30;
+      display:flex;background:rgba(0,0,0,.7);backdrop-filter:blur(12px);
+      border:1px solid var(--border);border-radius:8px;overflow:hidden;
+    }
+    .mode-btn{font-size:11px;font-weight:500;padding:6px 14px;cursor:pointer;transition:all .15s;color:var(--muted);background:transparent;border:none;letter-spacing:.04em}
+    .mode-btn.active{background:var(--bg3);color:var(--text)}
+
+    /* Feedback mode overlay */
+    .feedback-mode-hint{
+      position:absolute;top:56px;left:50%;transform:translateX(-50%);z-index:30;
+      background:rgba(200,245,100,.12);border:1px solid rgba(200,245,100,.3);
+      border-radius:8px;padding:8px 16px;font-size:12px;color:var(--accent);
+      display:none;white-space:nowrap;pointer-events:none;
+    }
+    .feedback-mode-hint.show{display:block}
+
+    /* LP iframe container */
+    .iframe-wrap{
+      width:100%;height:100%;position:relative;overflow:hidden
+    }
+    .iframe-wrap iframe{
+      width:100%;height:100%;border:none;
+      transition:opacity .3s
+    }
+
+    /* Overlay canvas for clicks */
+    .overlay-canvas{
+      position:absolute;inset:0;z-index:20;
+      cursor:crosshair;display:none;
+      background:rgba(200,245,100,.03)
+    }
+    .overlay-canvas.active{display:block}
+
+    /* Section highlight boxes */
+    .section-highlight{
+      position:absolute;border:2px solid transparent;border-radius:4px;
+      transition:all .15s;cursor:pointer;
+    }
+    .section-highlight:hover,.section-highlight.hovered{
+      border-color:var(--accent);
+      background:rgba(200,245,100,.06);
+    }
+    .section-highlight.has-feedback{
+      border-color:var(--yellow);
+      background:rgba(255,209,102,.04);
+    }
+    .section-label{
+      position:absolute;top:-26px;left:0;
+      font-family:'IBM Plex Mono',monospace;font-size:10px;
+      background:var(--accent);color:#000;padding:3px 8px;border-radius:4px;
+      white-space:nowrap;font-weight:600;letter-spacing:.05em;
+      opacity:0;transition:opacity .15s;pointer-events:none;
+    }
+    .section-highlight:hover .section-label,.section-highlight.hovered .section-label{opacity:1}
+
+    /* Loading state */
+    .lp-loading{
+      position:absolute;inset:0;display:flex;flex-direction:column;
+      align-items:center;justify-content:center;gap:16px;
+      background:var(--bg);z-index:50
+    }
+    .lp-loading.hidden{display:none}
+    .lp-loading-spinner{width:32px;height:32px;border-radius:50%;border:2px solid var(--border);border-top-color:var(--accent);animation:spin .8s linear infinite}
+    .lp-loading-text{font-size:14px;color:var(--muted)}
+    .lp-loading-sub{font-size:12px;color:var(--dim)}
+    @keyframes spin{to{transform:rotate(360deg)}}
+
+    /* Empty state */
+    .lp-empty{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;background:var(--bg)}
+    .lp-empty.hidden{display:none}
+    .lp-empty-icon{font-size:40px}
+    .lp-empty-text{font-size:15px;color:var(--muted)}
+    .lp-empty-sub{font-size:13px;color:var(--dim)}
+
+    /* ── RIGHT PANEL — FEEDBACKS */
+    .feedback-panel{
+      width:360px;flex-shrink:0;
+      border-left:1px solid var(--border);
+      display:flex;flex-direction:column;
+      background:var(--bg2);overflow:hidden;
+    }
+
+    .fp-header{padding:16px 18px;border-bottom:1px solid var(--border);flex-shrink:0}
+    .fp-title{font-family:'Syne',sans-serif;font-size:13px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);margin-bottom:4px}
+    .fp-sub{font-size:11px;color:var(--dim)}
+
+    /* Feedback list */
+    .fp-list{flex:1;overflow-y:auto;padding:12px}
+    .fp-empty{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;height:100%;color:var(--dim);text-align:center;padding:24px}
+    .fp-empty-icon{font-size:28px}
+    .fp-empty-text{font-size:13px}
+    .fp-empty-sub{font-size:11px;line-height:1.6}
+
+    /* Feedback card */
+    .fb-card{
+      border:1px solid var(--border);border-radius:10px;
+      background:var(--bg3);margin-bottom:8px;overflow:hidden;
+      transition:border-color .15s
+    }
+    .fb-card:hover{border-color:var(--border-act)}
+    .fb-card.selected{border-color:var(--accent)}
+    .fb-card-head{
+      padding:10px 12px;display:flex;align-items:center;gap:8px;
+      cursor:pointer;
+    }
+    .fb-section-tag{
+      font-family:'IBM Plex Mono',monospace;font-size:10px;font-weight:600;
+      letter-spacing:.05em;text-transform:uppercase;
+      padding:3px 8px;border-radius:4px;flex-shrink:0;
+    }
+    .fb-section-tag.hero{background:rgba(124,109,250,.15);color:#a89dfc}
+    .fb-section-tag.beneficios{background:rgba(6,214,160,.15);color:#06d6a0}
+    .fb-section-tag.cta{background:rgba(200,245,100,.15);color:#9ac836}
+    .fb-section-tag.depoimentos{background:rgba(255,209,102,.15);color:#ffd166}
+    .fb-section-tag.formulario{background:rgba(92,157,255,.15);color:#5c9dff}
+    .fb-section-tag.rodape{background:rgba(255,92,92,.15);color:#ff5c5c}
+    .fb-section-tag.outro{background:rgba(255,255,255,.05);color:var(--muted)}
+    .fb-card-title{font-size:12px;color:var(--text);flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+    .fb-card-del{width:24px;height:24px;border-radius:5px;background:transparent;border:none;color:var(--dim);cursor:pointer;font-size:14px;display:flex;align-items:center;justify-content:center;transition:all .15s;flex-shrink:0}
+    .fb-card-del:hover{background:var(--red-dim);color:var(--red)}
+    .fb-card-body{padding:0 12px 12px;display:none}
+    .fb-card.open .fb-card-body{display:block}
+    .fb-card-text{font-size:12px;color:var(--muted);line-height:1.6;margin-bottom:8px}
+    .fb-img-thumb{width:48px;height:48px;border-radius:6px;object-fit:cover;border:1px solid var(--border)}
+
+    /* Add feedback inline (popup) */
+    .fb-popup{
+      position:absolute;z-index:40;
+      width:300px;
+      background:var(--bg3);border:1px solid rgba(200,245,100,.3);
+      border-radius:12px;box-shadow:0 16px 40px rgba(0,0,0,.6);
+      overflow:hidden;display:none
+    }
+    .fb-popup.show{display:block}
+    .fb-popup-head{padding:12px 14px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:8px}
+    .fb-popup-title{font-family:'Syne',sans-serif;font-size:12px;font-weight:700;color:var(--accent);flex:1}
+    .fb-popup-close{width:22px;height:22px;border-radius:5px;background:transparent;border:none;color:var(--dim);cursor:pointer;font-size:14px;display:flex;align-items:center;justify-content:center;transition:all .15s}
+    .fb-popup-close:hover{background:var(--bg4);color:var(--text)}
+    .fb-popup-body{padding:12px 14px;display:flex;flex-direction:column;gap:10px}
+    .fb-popup select{font-family:'Inter',sans-serif;font-size:12px;color:var(--text);background:var(--bg4);border:1px solid var(--border);border-radius:7px;padding:8px 12px;outline:none;width:100%;-webkit-appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='10' viewBox='0 0 24 24' fill='none' stroke='%23555' stroke-width='2'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 10px center}
+    .fb-popup select option{background:#1c1c20}
+    .fb-popup textarea{font-family:'Inter',sans-serif;font-size:12px;color:var(--text);background:var(--bg4);border:1px solid var(--border);border-radius:7px;padding:8px 12px;outline:none;width:100%;resize:none;line-height:1.6;transition:border-color .15s}
+    .fb-popup textarea:focus{border-color:rgba(200,245,100,.35)}
+    .fb-popup textarea::placeholder{color:var(--dim)}
+
+    /* Image attach in popup */
+    .fb-attach{display:flex;align-items:center;gap:8px}
+    .fb-attach-btn{font-size:11px;color:var(--muted);background:var(--bg4);border:1px dashed var(--border);border-radius:6px;padding:6px 12px;cursor:pointer;transition:all .15s;flex-shrink:0}
+    .fb-attach-btn:hover{border-color:var(--border-act);color:var(--text)}
+    .fb-attach-preview{width:36px;height:36px;border-radius:5px;object-fit:cover;display:none}
+    .fb-attach-preview.show{display:block}
+    #fbImgInput{display:none}
+
+    .fb-popup-footer{padding:10px 14px;border-top:1px solid var(--border);display:flex;gap:8px}
+    .btn-fb-cancel{flex:1;font-size:12px;padding:8px;border-radius:7px;background:transparent;border:1px solid var(--border);color:var(--muted);cursor:pointer;transition:all .15s}
+    .btn-fb-cancel:hover{border-color:var(--border-act);color:var(--text)}
+    .btn-fb-save{flex:1;font-size:12px;font-weight:600;padding:8px;border-radius:7px;background:var(--accent);color:#000;border:none;cursor:pointer;transition:all .15s;font-family:'Syne',sans-serif;letter-spacing:.03em}
+    .btn-fb-save:hover{background:#d4ff6e}
+
+    /* Bottom action */
+    .fp-footer{padding:12px 14px;border-top:1px solid var(--border);flex-shrink:0;display:flex;flex-direction:column;gap:8px}
+    .fp-footer-count{font-size:11px;color:var(--dim);text-align:center}
+    .btn-regenerar{width:100%;font-family:'Syne',sans-serif;font-size:13px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;color:#000;background:var(--accent);border:none;border-radius:9px;padding:12px;cursor:pointer;transition:all .15s;position:relative;overflow:hidden}
+    .btn-regenerar:hover{background:#d4ff6e}
+    .btn-regenerar:disabled{opacity:.5;cursor:not-allowed}
+    .btn-regenerar .spin{display:none;width:16px;height:16px;border-radius:50%;border:2px solid rgba(0,0,0,.3);border-top-color:#000;animation:spin .6s linear infinite;margin:0 auto}
+    .btn-regenerar.loading span{display:none}
+    .btn-regenerar.loading .spin{display:block}
+
+    /* Version selector */
+    .version-bar{
+      padding:8px 18px;border-bottom:1px solid var(--border);
+      display:flex;align-items:center;gap:8px;flex-shrink:0
+    }
+    .version-label{font-size:11px;color:var(--dim);letter-spacing:.04em;text-transform:uppercase}
+    .version-btns{display:flex;gap:4px}
+    .version-btn{font-family:'IBM Plex Mono',monospace;font-size:11px;padding:4px 10px;border-radius:5px;border:1px solid var(--border);background:var(--bg3);color:var(--muted);cursor:pointer;transition:all .15s}
+    .version-btn.active{background:var(--accent-dim);border-color:var(--accent);color:var(--accent)}
+
+    ::-webkit-scrollbar{width:4px}
+    ::-webkit-scrollbar-track{background:transparent}
+    ::-webkit-scrollbar-thumb{background:rgba(255,255,255,.07);border-radius:2px}
+  </style>
+</head>
+<body>
+
+<!-- TOP BAR -->
+<div class="topbar">
+  <a class="topbar-logo" href="index.html"><span class="logo-dot"></span>Banco de Templates</a>
+  <div class="topbar-sep"></div>
+  <span class="project-name" id="projectName">Carregando projeto...</span>
+  <span class="status-badge revisao" id="statusBadge">Em revisão</span>
+  <div class="topbar-actions">
+    <button class="btn-top" onclick="toggleMode()">🔍 Modo visualização</button>
+    <button class="btn-top danger" onclick="rejeitarLP()">✕ Rejeitar</button>
+    <button class="btn-top primary" onclick="aprovarLP()">✓ Aprovar LP</button>
+  </div>
+</div>
+
+<!-- WORKSPACE -->
+<div class="workspace">
+
+  <!-- PREVIEW PANEL -->
+  <div class="preview-panel" id="previewPanel">
+
+    <div class="mode-toggle">
+      <button class="mode-btn active" id="modeVisBtn" onclick="setMode('visualizar')">👁 Visualizar</button>
+      <button class="mode-btn" id="modeFbBtn" onclick="setMode('feedback')">✏️ Dar Feedback</button>
+    </div>
+
+    <div class="feedback-mode-hint" id="fbHint">Clique em qualquer seção da LP para adicionar feedback</div>
+
+    <!-- LP loading -->
+    <div class="lp-loading" id="lpLoading">
+      <div class="lp-loading-spinner"></div>
+      <div class="lp-loading-text">Gerando sua LP...</div>
+      <div class="lp-loading-sub" id="lpLoadingSub">Isso pode levar alguns segundos</div>
+    </div>
+
+    <!-- LP empty -->
+    <div class="lp-empty hidden" id="lpEmpty">
+      <div class="lp-empty-icon">📄</div>
+      <div class="lp-empty-text">LP ainda não gerada</div>
+      <div class="lp-empty-sub">Preencha o briefing para começar</div>
+    </div>
+
+    <!-- iframe + overlay -->
+    <div class="iframe-wrap" id="iframeWrap">
+      <iframe id="lpIframe" sandbox="allow-scripts allow-same-origin" title="Preview da LP"></iframe>
+      <div class="overlay-canvas" id="overlayCanvas" onclick="handleCanvasClick(event)"></div>
+    </div>
+
+    <!-- Feedback popup (aparece sobre a LP ao clicar) -->
+    <div class="fb-popup" id="fbPopup">
+      <div class="fb-popup-head">
+        <span class="fb-popup-title" id="fbPopupTitle">Seção: Hero</span>
+        <button class="fb-popup-close" onclick="closePopup()">×</button>
+      </div>
+      <div class="fb-popup-body">
+        <select id="fbSectionSel">
+          <option value="hero">🏠 Hero / Topo</option>
+          <option value="beneficios">✅ Benefícios</option>
+          <option value="como_funciona">⚙️ Como funciona</option>
+          <option value="depoimentos">💬 Depoimentos</option>
+          <option value="cta">🎯 CTA / Botões</option>
+          <option value="formulario">📋 Formulário</option>
+          <option value="rodape">🔻 Rodapé</option>
+          <option value="outro">📌 Outro</option>
+        </select>
+        <textarea id="fbTextArea" rows="4" placeholder="Descreva o que precisa mudar nesta seção...&#10;Ex: Trocar a headline por algo mais direto, remover o parágrafo do meio, aumentar o destaque do CTA..."></textarea>
+        <div class="fb-attach">
+          <button type="button" class="fb-attach-btn" onclick="document.getElementById('fbImgInput').click()">📎 Anexar imagem</button>
+          <input type="file" id="fbImgInput" accept="image/*" onchange="handleFbImg(this)" />
+          <img id="fbImgPreview" class="fb-attach-preview" />
+        </div>
+      </div>
+      <div class="fb-popup-footer">
+        <button class="btn-fb-cancel" onclick="closePopup()">Cancelar</button>
+        <button class="btn-fb-save" onclick="saveFeedback()">Salvar feedback</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- FEEDBACK PANEL -->
+  <div class="feedback-panel">
+
+    <div class="fp-header">
+      <div class="fp-title">Feedbacks</div>
+      <div class="fp-sub" id="fpSub">Nenhum feedback adicionado</div>
+    </div>
+
+    <div class="version-bar">
+      <span class="version-label">Versão</span>
+      <div class="version-btns" id="versionBtns">
+        <button class="version-btn active">v1</button>
+      </div>
+    </div>
+
+    <div class="fp-list" id="fpList">
+      <div class="fp-empty" id="fpEmpty">
+        <div class="fp-empty-icon">💬</div>
+        <div class="fp-empty-text">Nenhum feedback ainda</div>
+        <div class="fp-empty-sub">Ative o modo "Dar Feedback" e clique em qualquer seção da LP para adicionar um comentário</div>
+      </div>
+    </div>
+
+    <div class="fp-footer">
+      <div class="fp-footer-count" id="fpCount">0 feedbacks</div>
+      <button class="btn-regenerar" id="btnRegenerar" onclick="regenerarLP()" disabled>
+        <span>Regenerar com feedbacks →</span>
+        <div class="spin"></div>
+      </button>
+    </div>
+  </div>
+
+</div>
+
+<script>
+// ── CONFIG
+const SUPABASE_URL = 'https://SEU_PROJETO.supabase.co';
+const SUPABASE_KEY = 'SUA_SUPABASE_ANON_KEY';
+const WEBHOOK_REGENERAR = 'https://workflow.v4arcos.com.br/webhook/regenerar-lp';
+const WEBHOOK_APROVAR   = 'https://workflow.v4arcos.com.br/webhook/aprovar-lp';
+
+// ── STATE
+const params = new URLSearchParams(location.search);
+const projetoId = params.get('id');
+let currentMode = 'visualizar'; // 'visualizar' | 'feedback'
+let feedbacks = [];
+let fbImgBase64 = null;
+let currentVersion = 1;
+let totalVersions = 1;
+let lpHtml = '';
+let projeto = null;
+
+// ── INIT
+async function init() {
+  if (!projetoId) { showEmpty('Nenhum projeto selecionado'); return; }
+  await carregarProjeto();
+}
+
+async function carregarProjeto() {
+  try {
+    const res = await fetch(`${SUPABASE_URL}/rest/v1/v_projetos_dashboard?id=eq.${projetoId}&select=*`, {
+      headers: { apikey: SUPABASE_KEY, Authorization: `Bearer ${SUPABASE_KEY}` }
+    });
+    const data = await res.json();
+    if (!data.length) { showEmpty('Projeto não encontrado'); return; }
+    projeto = data[0];
+    document.getElementById('projectName').textContent = `${projeto.nome_empresa} — v${projeto.lp_versao_atual || 1}`;
+    totalVersions = projeto.lp_versao_atual || 1;
+    renderVersionBtns();
+    await carregarLP(totalVersions);
+  } catch(e) { console.error(e); showEmpty('Erro ao carregar projeto'); }
+}
+
+async function carregarLP(versao) {
+  document.getElementById('lpLoading').classList.remove('hidden');
+  document.getElementById('lpEmpty').classList.add('hidden');
+  try {
+    const res = await fetch(`${SUPABASE_URL}/rest/v1/lps?projeto_id=eq.${projetoId}&versao=eq.${versao}&select=*`, {
+      headers: { apikey: SUPABASE_KEY, Authorization: `Bearer ${SUPABASE_KEY}` }
+    });
+    const data = await res.json();
+    if (!data.length) { showLoading('Aguardando geração da LP...', 'Isso pode levar alguns segundos. Recarregue em instantes.'); return; }
+    lpHtml = data[0].html_conteudo;
+    renderLP(lpHtml);
+    await carregarFeedbacks(versao);
+  } catch(e) { console.error(e); showLoading('Erro ao carregar LP', 'Tente recarregar a página.'); }
+}
+
+function renderLP(html) {
+  document.getElementById('lpLoading').classList.add('hidden');
+  const iframe = document.getElementById('lpIframe');
+  const blob = new Blob([html], { type: 'text/html' });
+  const url = URL.createObjectURL(blob);
+  iframe.src = url;
+  iframe.onload = () => { if (currentMode === 'feedback') setupOverlay(); };
+}
+
+async function carregarFeedbacks(versao) {
+  try {
+    const res = await fetch(`${SUPABASE_URL}/rest/v1/feedbacks?projeto_id=eq.${projetoId}&versao=eq.${versao}&tipo=eq.lp&select=*&order=created_at.asc`, {
+      headers: { apikey: SUPABASE_KEY, Authorization: `Bearer ${SUPABASE_KEY}` }
+    });
+    feedbacks = await res.json();
+    renderFeedbackList();
+  } catch(e) { console.error(e); }
+}
+
+// ── MODE TOGGLE
+function setMode(mode) {
+  currentMode = mode;
+  const canvas = document.getElementById('overlayCanvas');
+  const hint   = document.getElementById('fbHint');
+  const modeVis = document.getElementById('modeVisBtn');
+  const modeFb  = document.getElementById('modeFbBtn');
+  if (mode === 'feedback') {
+    canvas.classList.add('active');
+    hint.classList.add('show');
+    modeVis.classList.remove('active');
+    modeFb.classList.add('active');
+    setupOverlay();
+  } else {
+    canvas.classList.remove('active');
+    hint.classList.remove('show');
+    modeVis.classList.add('active');
+    modeFb.classList.remove('active');
+    closePopup();
+  }
+}
+function toggleMode() {
+  setMode(currentMode === 'visualizar' ? 'feedback' : 'visualizar');
+  const btn = document.querySelector('.btn-top:not(.primary):not(.danger)');
+  btn.textContent = currentMode === 'feedback' ? '👁 Visualizar' : '✏️ Feedback';
+}
+
+// ── OVERLAY
+function setupOverlay() {
+  const canvas = document.getElementById('overlayCanvas');
+  canvas.innerHTML = '';
+  // Sections ficam como áreas clicáveis — posições aproximadas da LP
+  const sections = [
+    { id:'hero',          label:'Hero / Topo',     top:'0%',   height:'30%' },
+    { id:'beneficios',    label:'Benefícios',       top:'30%',  height:'20%' },
+    { id:'como_funciona', label:'Como funciona',    top:'50%',  height:'15%' },
+    { id:'depoimentos',   label:'Depoimentos',      top:'65%',  height:'15%' },
+    { id:'cta',           label:'CTA',              top:'80%',  height:'10%' },
+    { id:'rodape',        label:'Rodapé',           top:'90%',  height:'10%' },
+  ];
+  sections.forEach(s => {
+    const div = document.createElement('div');
+    div.className = 'section-highlight';
+    div.dataset.section = s.id;
+    div.style.cssText = `top:${s.top};left:0;width:100%;height:${s.height}`;
+    const hasFb = feedbacks.some(f => f.secao === s.id);
+    if (hasFb) div.classList.add('has-feedback');
+    div.innerHTML = `<span class="section-label">${s.label}</span>`;
+    div.addEventListener('click', (e) => { e.stopPropagation(); openPopupForSection(s.id, s.label, e); });
+    canvas.appendChild(div);
+  });
+}
+
+// ── POPUP
+let currentPopupSection = null;
+function openPopupForSection(sectionId, label, event) {
+  currentPopupSection = sectionId;
+  fbImgBase64 = null;
+  document.getElementById('fbImgPreview').classList.remove('show');
+  document.getElementById('fbTextArea').value = '';
+  document.getElementById('fbSectionSel').value = sectionId;
+  document.getElementById('fbPopupTitle').textContent = `Seção: ${label}`;
+
+  const popup = document.getElementById('fbPopup');
+  popup.classList.add('show');
+
+  // Posiciona o popup próximo ao clique
+  const panel = document.getElementById('previewPanel');
+  const rect = panel.getBoundingClientRect();
+  let top = event.clientY - rect.top - 20;
+  let left = event.clientX - rect.left + 20;
+  if (left + 310 > rect.width) left = event.clientX - rect.left - 330;
+  if (top + 320 > rect.height) top = event.clientY - rect.top - 320;
+  popup.style.top = Math.max(60, top) + 'px';
+  popup.style.left = Math.max(10, left) + 'px';
+}
+
+function closePopup() {
+  document.getElementById('fbPopup').classList.remove('show');
+  currentPopupSection = null;
+  fbImgBase64 = null;
+}
+
+function handleFbImg(input) {
+  const file = input.files[0]; if (!file) return;
+  const reader = new FileReader();
+  reader.onload = e => {
+    fbImgBase64 = { name: file.name, type: file.type, data: e.target.result.split(',')[1] };
+    const img = document.getElementById('fbImgPreview');
+    img.src = e.target.result; img.classList.add('show');
+  };
+  reader.readAsDataURL(file);
+}
+
+function handleCanvasClick(e) {
+  if (e.target === document.getElementById('overlayCanvas')) closePopup();
+}
+
+// ── SAVE FEEDBACK
+async function saveFeedback() {
+  const texto = document.getElementById('fbTextArea').value.trim();
+  if (!texto) { document.getElementById('fbTextArea').style.borderColor = 'rgba(255,92,92,.5)'; return; }
+  document.getElementById('fbTextArea').style.borderColor = '';
+
+  const secao = document.getElementById('fbSectionSel').value;
+  const fb = {
+    projeto_id: projetoId,
+    tipo: 'lp',
+    referencia_id: projetoId, // será substituído pelo id da LP
+    versao: currentVersion,
+    account: projeto?.account_responsavel || 'account',
+    secao,
+    descricao: texto,
+    acao_solicitada: 'ajustar',
+    imagem_anexo: fbImgBase64 || null,
+  };
+
+  try {
+    const res = await fetch(`${SUPABASE_URL}/rest/v1/feedbacks`, {
+      method: 'POST',
+      headers: { apikey: SUPABASE_KEY, Authorization: `Bearer ${SUPABASE_KEY}`, 'Content-Type': 'application/json', Prefer: 'return=representation' },
+      body: JSON.stringify(fb)
+    });
+    if (res.ok) {
+      const saved = await res.json();
+      feedbacks.push(saved[0] || fb);
+      renderFeedbackList();
+      closePopup();
+      setupOverlay(); // Atualiza highlights
+    }
+  } catch(e) { console.error(e); }
+}
+
+// ── RENDER FEEDBACKS
+const sectionColors = { hero:'hero', beneficios:'beneficios', cta:'cta', depoimentos:'depoimentos', formulario:'formulario', rodape:'rodape', outro:'outro', como_funciona:'beneficios' };
+const sectionNames  = { hero:'Hero', beneficios:'Benefícios', cta:'CTA', depoimentos:'Depoimentos', formulario:'Formulário', rodape:'Rodapé', outro:'Outro', como_funciona:'Como funciona' };
+
+function renderFeedbackList() {
+  const list = document.getElementById('fpList');
+  const empty = document.getElementById('fpEmpty');
+  const count = document.getElementById('fpCount');
+  const sub   = document.getElementById('fpSub');
+  const btn   = document.getElementById('btnRegenerar');
+  count.textContent = `${feedbacks.length} feedback${feedbacks.length !== 1 ? 's' : ''}`;
+  sub.textContent   = feedbacks.length ? `${feedbacks.length} ponto${feedbacks.length !== 1 ? 's' : ''} para revisar` : 'Nenhum feedback adicionado';
+  btn.disabled = feedbacks.length === 0;
+
+  if (!feedbacks.length) { empty.style.display = 'flex'; return; }
+  empty.style.display = 'none';
+
+  // Limpa cards (mantém o empty)
+  list.querySelectorAll('.fb-card').forEach(c => c.remove());
+
+  feedbacks.forEach((fb, i) => {
+    const card = document.createElement('div');
+    card.className = 'fb-card';
+    card.innerHTML = `
+      <div class="fb-card-head" onclick="toggleFbCard(this)">
+        <span class="fb-section-tag ${sectionColors[fb.secao]||'outro'}">${sectionNames[fb.secao]||fb.secao}</span>
+        <span class="fb-card-title">${fb.descricao.slice(0,50)}${fb.descricao.length>50?'...':''}</span>
+        <button class="fb-card-del" onclick="deleteFeedback(event,'${fb.id||i}',${i})">×</button>
+      </div>
+      <div class="fb-card-body">
+        <p class="fb-card-text">${fb.descricao}</p>
+        ${fb.imagem_anexo ? `<img class="fb-img-thumb" src="data:${fb.imagem_anexo.type};base64,${fb.imagem_anexo.data}" />` : ''}
+      </div>`;
+    list.appendChild(card);
+  });
+}
+
+function toggleFbCard(head) { head.closest('.fb-card').classList.toggle('open'); }
+
+async function deleteFeedback(e, id, idx) {
+  e.stopPropagation();
+  if (id && !id.match(/^\d+$/)) {
+    await fetch(`${SUPABASE_URL}/rest/v1/feedbacks?id=eq.${id}`, {
+      method: 'DELETE', headers: { apikey: SUPABASE_KEY, Authorization: `Bearer ${SUPABASE_KEY}` }
+    });
+  }
+  feedbacks.splice(idx, 1);
+  renderFeedbackList();
+  setupOverlay();
+}
+
+// ── REGENERAR
+async function regenerarLP() {
+  if (!feedbacks.length) return;
+  const btn = document.getElementById('btnRegenerar');
+  btn.disabled = true; btn.classList.add('loading');
+  try {
+    const res = await fetch(WEBHOOK_REGENERAR, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ projeto_id: projetoId, versao_atual: currentVersion, feedbacks })
+    });
+    if (res.ok) {
+      const data = await res.json().catch(() => ({}));
+      alert('LP sendo regenerada! Recarregue em alguns segundos.');
+      window.location.reload();
+    }
+  } catch(e) { console.error(e); alert('Erro ao regenerar. Tente novamente.'); }
+  finally { btn.disabled = false; btn.classList.remove('loading'); }
+}
+
+// ── APROVAR / REJEITAR
+async function aprovarLP() {
+  if (!confirm('Confirma aprovação desta LP?')) return;
+  await fetch(WEBHOOK_APROVAR, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ projeto_id: projetoId, versao: currentVersion, acao: 'aprovar' }) });
+  document.getElementById('statusBadge').textContent = 'Aprovada ✓';
+  document.getElementById('statusBadge').className = 'status-badge aprovada';
+  alert('LP aprovada! Próximo passo: publicar.');
+}
+async function rejeitarLP() {
+  if (!confirm('Rejeitar esta versão e criar uma nova?')) return;
+  document.getElementById('btnRegenerar').click();
+}
+
+// ── VERSIONS
+function renderVersionBtns() {
+  const wrap = document.getElementById('versionBtns');
+  wrap.innerHTML = '';
+  for (let i = 1; i <= totalVersions; i++) {
+    const btn = document.createElement('button');
+    btn.className = `version-btn ${i === currentVersion ? 'active' : ''}`;
+    btn.textContent = `v${i}`;
+    btn.onclick = () => { currentVersion = i; renderVersionBtns(); carregarLP(i); };
+    wrap.appendChild(btn);
+  }
+}
+
+// ── UTILS
+function showEmpty(msg) {
+  document.getElementById('lpLoading').classList.add('hidden');
+  document.getElementById('lpEmpty').classList.remove('hidden');
+  document.getElementById('lpEmpty').querySelector('.lp-empty-text').textContent = msg;
+}
+function showLoading(text, sub) {
+  document.getElementById('lpLoading').classList.remove('hidden');
+  document.getElementById('lpEmpty').classList.add('hidden');
+  document.getElementById('lpLoading').querySelector('.lp-loading-text').textContent = text;
+  document.getElementById('lpLoadingSub').textContent = sub;
+}
+
+// ── START
+init();
+</script>
+</body>
+</html>
