@@ -413,10 +413,23 @@ async function carregarLP(versao) {
 function renderLP(html) {
   document.getElementById('lpLoading').classList.add('hidden');
   const iframe = document.getElementById('lpIframe');
-  const blob = new Blob([html], { type: 'text/html' });
-  const url = URL.createObjectURL(blob);
-  iframe.src = url;
-  iframe.onload = () => { if (currentMode === 'feedback') setupOverlay(); };
+
+  // Adiciona base tag para assets carregarem do GitHub Pages
+  const templatePath = projeto.template_url || '';
+  const baseDir = templatePath
+    ? `https://gustavo120405.github.io/banco-de-referencias/${templatePath.replace('index.html', '')}`
+    : 'https://gustavo120405.github.io/banco-de-referencias/';
+
+  const htmlFinal = html.includes('<head>')
+    ? html.replace('<head>', `<head><base href="${baseDir}">`)
+    : html.replace('<HEAD>', `<HEAD><base href="${baseDir}">`);
+
+  const blob = new Blob([htmlFinal], { type: 'text/html' });
+  iframe.src = URL.createObjectURL(blob);
+  iframe.onload = () => {
+    iframe.classList.add('loaded');
+    document.getElementById('lpLoading').classList.add('hidden');
+  };
 }
 
 async function carregarFeedbacks(versao) {
