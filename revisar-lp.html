@@ -373,17 +373,26 @@ async function init() {
 
 async function carregarProjeto() {
   try {
-    const res = await fetch(`${SUPABASE_URL}/rest/v1/v_projetos_dashboard?id=eq.${projetoId}&select=*`, {
-      headers: { apikey: SUPABASE_KEY, Authorization: `Bearer ${SUPABASE_KEY}` }
-    });
+    // Consulta direto na tabela projetos (sem view)
+    const res = await fetch(
+      `${SUPABASE_URL}/rest/v1/projetos?id=eq.${projetoId}&select=*`,
+      { headers: { apikey: SUPABASE_KEY, Authorization: `Bearer ${SUPABASE_KEY}` } }
+    );
     const data = await res.json();
-    if (!data.length) { showEmpty('Projeto não encontrado'); return; }
+    console.log('Projeto carregado:', data); // debug
+
+    if (!data.length) { showEmpty('Projeto não encontrado — ID: ' + projetoId); return; }
     projeto = data[0];
-    document.getElementById('projectName').textContent = `${projeto.nome_empresa} — v${projeto.lp_versao_atual || 1}`;
+    document.getElementById('projectName').textContent =
+      `${projeto.nome_empresa} — v${projeto.lp_versao_atual || 1}`;
     totalVersions = projeto.lp_versao_atual || 1;
+    currentVersion = totalVersions;
     renderVersionBtns();
     await carregarLP(totalVersions);
-  } catch(e) { console.error(e); showEmpty('Erro ao carregar projeto'); }
+  } catch(e) {
+    console.error('Erro carregarProjeto:', e);
+    showEmpty('Erro ao carregar: ' + e.message);
+  }
 }
 
 async function carregarLP(versao) {
