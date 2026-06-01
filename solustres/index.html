@@ -46,7 +46,7 @@
       position: relative;
       background:
         radial-gradient(circle at 18% 3%, rgba(215, 173, 98, 0.22), transparent 26rem),
-        linear-gradient(180deg, #0c1110 0, #111917 580px, #f7f2ea 581px, #f7f2ea 100%);
+        linear-gradient(180deg, #0c1110 0, #111917 940px, #f7f2ea 941px, #f7f2ea 100%);
       min-height: 100vh;
     }
 
@@ -75,9 +75,49 @@
     .brand-mark::before { content: "✦"; color: var(--gold-light); font-size: 18px; }
     .nav-note { color: var(--muted); font-size: 0.92rem; }
 
+    .briefing-banner {
+      margin: 8px auto 10px;
+      padding: 24px 28px;
+      border: 1px solid var(--border);
+      border-radius: 24px;
+      background: linear-gradient(135deg, rgba(255,255,255,0.10), rgba(255,255,255,0.04));
+      color: var(--text);
+      box-shadow: 0 18px 50px rgba(0,0,0,0.18);
+    }
+    .briefing-banner h2 {
+      font-family: "Manrope", system-ui, sans-serif;
+      font-size: clamp(1.25rem, 2.4vw, 2rem);
+      line-height: 1.18;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      margin-bottom: 10px;
+    }
+    .briefing-banner p { color: var(--muted); line-height: 1.7; }
+    .briefing-banner strong { color: #f6ead8; }
+
+    .section-tag {
+      display: inline-flex;
+      align-items: center;
+      border-radius: 999px;
+      padding: 8px 13px;
+      margin-bottom: 18px;
+      background: rgba(45,118,85,0.12);
+      color: var(--green);
+      border: 1px solid rgba(45,118,85,0.22);
+      font-size: 0.76rem;
+      font-weight: 900;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+    .offer .section-tag, .hero .section-tag, .cta-panel .section-tag {
+      background: rgba(215,173,98,0.10);
+      border-color: rgba(215,173,98,0.28);
+      color: var(--gold-light);
+    }
+
     .hero {
       color: var(--text);
-      padding: 36px 0 72px;
+      padding: 28px 0 72px;
       position: relative;
     }
     .hero-grid {
@@ -104,7 +144,7 @@
     .eyebrow::before { content: ""; width: 7px; height: 7px; border-radius: 50%; background: var(--gold); box-shadow: 0 0 0 6px rgba(215,173,98,0.12); }
     h1 {
       font-family: "Playfair Display", Georgia, serif;
-      font-size: clamp(2.55rem, 6vw, 5.25rem);
+      font-size: clamp(2.35rem, 5.1vw, 4.8rem);
       line-height: 0.98;
       max-width: 760px;
       letter-spacing: -0.055em;
@@ -224,7 +264,7 @@
       transition: transform .2s, filter .2s, box-shadow .2s;
     }
     .cta:hover { transform: translateY(-2px); filter: brightness(1.04); box-shadow: 0 20px 44px rgba(215, 173, 98, 0.32); }
-    .privacy { text-align: center; color: var(--muted); font-size: 0.84rem; margin-top: 13px; }
+    .privacy { text-align: center; color: #f3e3c7; font-size: 0.84rem; margin-top: 13px; text-shadow: 0 1px 10px rgba(0,0,0,0.35); }
 
     .showroom-card {
       margin-top: -42px;
@@ -351,6 +391,15 @@
       background: radial-gradient(circle, rgba(215,173,98,0.22), transparent 62%);
     }
     .offer .section-heading p { color: var(--muted); }
+    .process-flow-label {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      margin: 6px 0 18px;
+      color: var(--gold-light);
+      font-weight: 900;
+      letter-spacing: 0.02em;
+    }
     .process {
       display: grid;
       grid-template-columns: repeat(3, 1fr);
@@ -466,6 +515,11 @@
     footer .container { display: flex; justify-content: space-between; gap: 18px; flex-wrap: wrap; }
 
     @media (max-width: 980px) {
+      .page-shell {
+        background:
+          radial-gradient(circle at 18% 3%, rgba(215, 173, 98, 0.22), transparent 26rem),
+          linear-gradient(180deg, #0c1110 0, #111917 1320px, #f7f2ea 1321px, #f7f2ea 100%);
+      }
       .hero-grid, .steps-list, .cta-panel { grid-template-columns: 1fr; }
       .lead-form { max-width: 620px; }
       .showroom-card { margin-top: -20px; }
@@ -477,11 +531,16 @@
     }
 
     @media (max-width: 680px) {
+      .page-shell {
+        background:
+          radial-gradient(circle at 18% 3%, rgba(215, 173, 98, 0.22), transparent 22rem),
+          linear-gradient(180deg, #0c1110 0, #111917 1400px, #f7f2ea 1401px, #f7f2ea 100%);
+      }
       .container { width: min(100% - 28px, var(--max)); }
       .nav { padding: 18px 0; align-items: flex-start; }
       .nav-note { display: none; }
       .hero { padding: 24px 0 52px; }
-      h1 { font-size: clamp(2.45rem, 14vw, 4rem); }
+      h1 { font-size: clamp(2.25rem, 12vw, 3.85rem); }
       .lead-form { padding: 20px; border-radius: 24px; }
       .showroom-visual { min-height: 300px; }
       .image-placeholder { margin-top: 160px; padding: 20px; }
@@ -506,12 +565,17 @@
     </header>
 
     <main id="top">
+      <section class="container briefing-banner" aria-label="Tema e objetivo comercial">
+        <h2>WIREFRAME DE ALTA CONVERSÃO: SÓ LUSTRES</h2>
+        <p><strong>Objetivo Comercial:</strong> Reduzir a sazonalidade, atrair o consumidor final, principalmente passantes do Casa Shopping, e capturar leads qualificados interessados em iluminação de alto padrão e projetos luminotécnicos.</p>
+      </section>
+
       <section class="hero">
         <div class="container hero-grid">
           <div>
-            <div class="eyebrow">Wireframe de alta conversão</div>
-            <h1>Iluminação de Alto Padrão que <span>Transforma sua Casa</span>.</h1>
-            <p class="hero-copy">Design exclusivo com preço acessível e assessoria de especialistas para valorizar a elegância, a exclusividade e a facilidade de criar o ambiente dos sonhos sem pagar a mais por isso.</p>
+            <div class="section-tag">SEÇÃO 1: DOBRA PRINCIPAL / HERO SECTION</div>
+            <h1>Iluminação de Alto Padrão que <span>Transforma sua Casa.</span> Design Exclusivo com Preço Acessível e Assessoria de Especialistas.</h1>
+            <p class="hero-copy">Valorizar a elegância, exclusividade e a facilidade de criar o ambiente dos sonhos sem pagar a mais por isso.</p>
             <p class="subheadline"><span class="pin" aria-hidden="true">⌂</span> Visite nosso novo Showroom no Casa Shopping ou agende uma consultoria luminotécnica gratuita online para o seu projeto.</p>
             <div class="trust-row" aria-label="Diferenciais rápidos">
               <span class="trust-pill">20 anos de credibilidade</span>
@@ -521,7 +585,7 @@
           </div>
 
           <form class="lead-form" action="#" method="post">
-            <h2 class="form-title">Formulário de Captura - CTA</h2>
+            <h2 class="form-title">FORMULÁRIO DE CAPTURA - CTA</h2>
             <div class="field">
               <label for="nome">Nome</label>
               <input id="nome" name="nome" type="text" placeholder="Seu nome completo" autocomplete="name" required />
@@ -561,7 +625,7 @@
       <section class="benefits" id="beneficios">
         <div class="container">
           <div class="section-heading">
-            <p class="kicker">Benefícios & diferenciais competitivos</p>
+            <div class="section-tag">SEÇÃO 2: BENEFÍCIOS E DIFERENCIAIS COMPETITIVOS</div>
             <h2>Por que escolher a Só Lustres?</h2>
             <p>Foco em desmistificar a percepção de que a loja física no Casa Shopping possui preços proibitivos para o consumidor final, destacando as vantagens de comprar direto.</p>
           </div>
@@ -593,12 +657,13 @@
       <section class="offer" id="oferta">
         <div class="container">
           <div class="section-heading">
-            <p class="kicker">Detalhamento da oferta</p>
+            <div class="section-tag">SEÇÃO 3: DETALHAMENTO DA OFERTA</div>
             <h2>A Solução Perfeita para a sua Obra ou Reforma</h2>
             <p>Apresentação clara da mecânica da oferta para atrair tanto clientes finais quanto novos arquitetos parceiros que buscam agilidade e precisão técnica.</p>
           </div>
 
-          <div class="process" aria-label="Processo de atendimento">
+          <div class="process-flow-label" aria-label="Diagrama do processo">Planta Baixa → Consultoria → Entrega Protegida</div>
+          <div class="process" aria-label="Planta Baixa → Consultoria → Entrega Protegida">
             <div class="process-step">
               <p class="process-number">01</p>
               <h3>Planta Baixa</h3>
@@ -630,7 +695,7 @@
       <section class="social-proof" id="depoimentos">
         <div class="container">
           <div class="section-heading">
-            <p class="kicker">Prova social / garantia de satisfação</p>
+            <div class="section-tag">SEÇÃO 4: PROVA SOCIAL / GARANTIA DE SATISFAÇÃO</div>
             <h2>Quem já transformou ambientes com a Só Lustres</h2>
             <p>Depoimentos focados na experiência de pós-venda diferenciada e na facilidade de fechamento de orçamentos completos.</p>
           </div>
@@ -651,7 +716,7 @@
         <div class="container">
           <div class="cta-panel">
             <div>
-              <p class="kicker">Chamada final para ação</p>
+              <div class="section-tag">SEÇÃO 5: CHAMADA FINAL PARA AÇÃO / FOOTER CTA</div>
               <h2>Pronto para valorizar o seu imóvel?</h2>
               <p>Não deixe a escolha da iluminação para a última hora. Garanta agora mesmo uma consultoria técnica gratuita com nossos especialistas e evite erros caros na sua obra.</p>
             </div>
