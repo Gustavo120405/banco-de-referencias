@@ -44,11 +44,29 @@
 
     .page-shell {
       position: relative;
-      background:
-        radial-gradient(circle at 18% 3%, rgba(215, 173, 98, 0.22), transparent 26rem),
-        linear-gradient(180deg, #0c1110 0, #111917 940px, #f7f2ea 941px, #f7f2ea 100%);
+      background: var(--bg-cream);
       min-height: 100vh;
     }
+
+    .top-section {
+      background:
+        radial-gradient(circle at 18% 3%, rgba(215, 173, 98, 0.22), transparent 26rem),
+        linear-gradient(180deg, #0c1110 0%, #111917 100%);
+      color: var(--text);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .top-section::after {
+      content: "";
+      position: absolute;
+      inset: auto 0 0;
+      height: 180px;
+      background: linear-gradient(180deg, rgba(17,25,23,0), rgba(247,242,234,0.06));
+      pointer-events: none;
+    }
+
+    .top-section > * { position: relative; z-index: 1; }
 
     .container { width: min(var(--max), calc(100% - 40px)); margin: 0 auto; }
 
@@ -74,26 +92,6 @@
     }
     .brand-mark::before { content: "✦"; color: var(--gold-light); font-size: 18px; }
     .nav-note { color: var(--muted); font-size: 0.92rem; }
-
-    .briefing-banner {
-      margin: 8px auto 10px;
-      padding: 24px 28px;
-      border: 1px solid var(--border);
-      border-radius: 24px;
-      background: linear-gradient(135deg, rgba(255,255,255,0.10), rgba(255,255,255,0.04));
-      color: var(--text);
-      box-shadow: 0 18px 50px rgba(0,0,0,0.18);
-    }
-    .briefing-banner h2 {
-      font-family: "Manrope", system-ui, sans-serif;
-      font-size: clamp(1.25rem, 2.4vw, 2rem);
-      line-height: 1.18;
-      letter-spacing: 0.08em;
-      text-transform: uppercase;
-      margin-bottom: 10px;
-    }
-    .briefing-banner p { color: var(--muted); line-height: 1.7; }
-    .briefing-banner strong { color: #f6ead8; }
 
     .section-tag {
       display: inline-flex;
@@ -515,11 +513,6 @@
     footer .container { display: flex; justify-content: space-between; gap: 18px; flex-wrap: wrap; }
 
     @media (max-width: 980px) {
-      .page-shell {
-        background:
-          radial-gradient(circle at 18% 3%, rgba(215, 173, 98, 0.22), transparent 26rem),
-          linear-gradient(180deg, #0c1110 0, #111917 1320px, #f7f2ea 1321px, #f7f2ea 100%);
-      }
       .hero-grid, .steps-list, .cta-panel { grid-template-columns: 1fr; }
       .lead-form { max-width: 620px; }
       .showroom-card { margin-top: -20px; }
@@ -531,11 +524,6 @@
     }
 
     @media (max-width: 680px) {
-      .page-shell {
-        background:
-          radial-gradient(circle at 18% 3%, rgba(215, 173, 98, 0.22), transparent 22rem),
-          linear-gradient(180deg, #0c1110 0, #111917 1400px, #f7f2ea 1401px, #f7f2ea 100%);
-      }
       .container { width: min(100% - 28px, var(--max)); }
       .nav { padding: 18px 0; align-items: flex-start; }
       .nav-note { display: none; }
@@ -556,19 +544,14 @@
 </head>
 <body>
   <div class="page-shell">
-    <header class="container nav" aria-label="Topo da página">
-      <a class="brand" href="#top" aria-label="Só Lustres">
-        <span class="brand-mark" aria-hidden="true"></span>
-        <span>Só Lustres</span>
-      </a>
-      <p class="nav-note">Casa Shopping · Consultoria luminotécnica gratuita</p>
-    </header>
-
-    <main id="top">
-      <section class="container briefing-banner" aria-label="Tema e objetivo comercial">
-        <h2>WIREFRAME DE ALTA CONVERSÃO: SÓ LUSTRES</h2>
-        <p><strong>Objetivo Comercial:</strong> Reduzir a sazonalidade, atrair o consumidor final, principalmente passantes do Casa Shopping, e capturar leads qualificados interessados em iluminação de alto padrão e projetos luminotécnicos.</p>
-      </section>
+    <div class="top-section" id="top">
+      <header class="container nav" aria-label="Topo da página">
+        <a class="brand" href="#top" aria-label="Só Lustres">
+          <span class="brand-mark" aria-hidden="true"></span>
+          <span>Só Lustres</span>
+        </a>
+        <p class="nav-note">Casa Shopping · Consultoria luminotécnica gratuita</p>
+      </header>
 
       <section class="hero">
         <div class="container hero-grid">
@@ -609,7 +592,9 @@
           </form>
         </div>
       </section>
+    </div>
 
+    <main>
       <div class="container showroom-card" aria-label="Imagem principal provisória">
         <div class="showroom-visual">
           <span class="pendant one" aria-hidden="true"></span>
