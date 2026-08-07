@@ -1,0 +1,725 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Landing page de alta conversão para a Só Lustres: iluminação de alto padrão, design exclusivo, preço acessível e consultoria luminotécnica gratuita." />
+  <title>Só Lustres | Iluminação de Alto Padrão</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg: #0d1110;
+      --bg-soft: #141a18;
+      --bg-cream: #f7f2ea;
+      --card: rgba(255, 255, 255, 0.08);
+      --card-light: #fffaf2;
+      --text: #f9f4ec;
+      --text-dark: #18231f;
+      --muted: #c9bca8;
+      --muted-dark: #625a4f;
+      --gold: #d7ad62;
+      --gold-light: #f1cf8b;
+      --green: #2d7655;
+      --green-dark: #17432f;
+      --border: rgba(215, 173, 98, 0.28);
+      --shadow: 0 26px 80px rgba(0, 0, 0, 0.24);
+      --radius-xl: 30px;
+      --radius-lg: 22px;
+      --radius-md: 16px;
+      --max: 1160px;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: "Manrope", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background: var(--bg-cream);
+      color: var(--text-dark);
+      overflow-x: hidden;
+    }
+    a { color: inherit; text-decoration: none; }
+    button, input, select { font: inherit; }
+
+    .page-shell {
+      position: relative;
+      background: var(--bg-cream);
+      min-height: 100vh;
+    }
+
+    .top-section {
+      background:
+        radial-gradient(circle at 18% 3%, rgba(215, 173, 98, 0.22), transparent 26rem),
+        linear-gradient(180deg, #0c1110 0%, #111917 100%);
+      color: var(--text);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .top-section::after {
+      content: "";
+      position: absolute;
+      inset: auto 0 0;
+      height: 180px;
+      background: linear-gradient(180deg, rgba(17,25,23,0), rgba(247,242,234,0.06));
+      pointer-events: none;
+    }
+
+    .top-section > * { position: relative; z-index: 1; }
+
+    .container { width: min(var(--max), calc(100% - 40px)); margin: 0 auto; }
+
+    .nav {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 24px;
+      padding: 24px 0;
+      color: var(--text);
+    }
+
+    .brand { display: flex; align-items: center; gap: 12px; font-weight: 800; letter-spacing: 0.02em; }
+    .brand-mark {
+      width: 42px;
+      height: 42px;
+      border: 1px solid var(--border);
+      border-radius: 50%;
+      display: grid;
+      place-items: center;
+      background: linear-gradient(145deg, rgba(255,255,255,0.14), rgba(255,255,255,0.02));
+      box-shadow: 0 12px 34px rgba(0,0,0,0.22), inset 0 0 26px rgba(215,173,98,0.12);
+    }
+    .brand-mark::before { content: "✦"; color: var(--gold-light); font-size: 18px; }
+    .nav-note { color: var(--muted); font-size: 0.92rem; }
+
+    .section-tag {
+      display: inline-flex;
+      align-items: center;
+      border-radius: 999px;
+      padding: 8px 13px;
+      margin-bottom: 18px;
+      background: rgba(45,118,85,0.12);
+      color: var(--green);
+      border: 1px solid rgba(45,118,85,0.22);
+      font-size: 0.76rem;
+      font-weight: 900;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+    .offer .section-tag, .hero .section-tag, .cta-panel .section-tag {
+      background: rgba(215,173,98,0.10);
+      border-color: rgba(215,173,98,0.28);
+      color: var(--gold-light);
+    }
+
+    .hero {
+      color: var(--text);
+      padding: 28px 0 72px;
+      position: relative;
+    }
+    .hero-grid {
+      display: grid;
+      grid-template-columns: minmax(0, 1.12fr) 420px;
+      gap: 42px;
+      align-items: center;
+    }
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      border: 1px solid var(--border);
+      color: var(--gold-light);
+      background: rgba(215, 173, 98, 0.08);
+      border-radius: 999px;
+      padding: 9px 14px;
+      font-size: 0.78rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      margin-bottom: 22px;
+    }
+    .eyebrow::before { content: ""; width: 7px; height: 7px; border-radius: 50%; background: var(--gold); box-shadow: 0 0 0 6px rgba(215,173,98,0.12); }
+    h1 {
+      font-family: "Playfair Display", Georgia, serif;
+      font-size: clamp(2.35rem, 5.1vw, 4.8rem);
+      line-height: 0.98;
+      max-width: 760px;
+      letter-spacing: -0.055em;
+      margin-bottom: 22px;
+    }
+    h1 span { color: var(--gold-light); }
+    .hero-copy {
+      max-width: 650px;
+      color: #e9dcc8;
+      font-size: clamp(1.04rem, 2vw, 1.22rem);
+      line-height: 1.75;
+      margin-bottom: 18px;
+    }
+    .subheadline {
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      max-width: 650px;
+      color: var(--muted);
+      line-height: 1.65;
+      font-weight: 600;
+    }
+    .subheadline .pin {
+      width: 34px;
+      height: 34px;
+      flex: 0 0 34px;
+      border-radius: 50%;
+      display: grid;
+      place-items: center;
+      background: rgba(255,255,255,0.08);
+      border: 1px solid var(--border);
+    }
+
+    .trust-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-top: 30px;
+    }
+    .trust-pill {
+      border: 1px solid rgba(255,255,255,0.12);
+      background: rgba(255,255,255,0.06);
+      color: #f6ead8;
+      border-radius: 999px;
+      padding: 11px 14px;
+      font-size: 0.9rem;
+      backdrop-filter: blur(16px);
+    }
+
+    .lead-form {
+      background: linear-gradient(160deg, rgba(255,255,255,0.14), rgba(255,255,255,0.06));
+      border: 1px solid rgba(255,255,255,0.16);
+      border-radius: var(--radius-xl);
+      padding: 28px;
+      box-shadow: var(--shadow);
+      backdrop-filter: blur(22px);
+      position: relative;
+      overflow: hidden;
+    }
+    .lead-form::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(circle at 20% 0%, rgba(215,173,98,0.23), transparent 16rem);
+      pointer-events: none;
+    }
+    .lead-form > * { position: relative; z-index: 1; }
+    .form-title {
+      font-size: 1.1rem;
+      line-height: 1.35;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      margin-bottom: 18px;
+    }
+    .field { margin-bottom: 13px; }
+    .field label {
+      display: block;
+      color: #e9dcc8;
+      font-size: 0.82rem;
+      font-weight: 700;
+      margin-bottom: 7px;
+    }
+    .field input, .field select {
+      width: 100%;
+      min-height: 52px;
+      border: 1px solid rgba(255,255,255,0.14);
+      border-radius: 14px;
+      color: var(--text);
+      background: rgba(0,0,0,0.22);
+      outline: none;
+      padding: 0 15px;
+      transition: border-color .2s, box-shadow .2s, background .2s;
+    }
+    .field select option { color: var(--text-dark); }
+    .field input::placeholder { color: rgba(249,244,236,0.48); }
+    .field input:focus, .field select:focus {
+      border-color: rgba(215,173,98,0.78);
+      box-shadow: 0 0 0 4px rgba(215,173,98,0.13);
+      background: rgba(0,0,0,0.32);
+    }
+
+    .cta {
+      display: inline-flex;
+      width: 100%;
+      min-height: 56px;
+      align-items: center;
+      justify-content: center;
+      border: 0;
+      border-radius: 15px;
+      color: #17130d;
+      background: linear-gradient(135deg, #f6d894, #c58d36);
+      font-weight: 900;
+      letter-spacing: 0.02em;
+      cursor: pointer;
+      box-shadow: 0 18px 34px rgba(215, 173, 98, 0.22);
+      transition: transform .2s, filter .2s, box-shadow .2s;
+    }
+    .cta:hover { transform: translateY(-2px); filter: brightness(1.04); box-shadow: 0 20px 44px rgba(215, 173, 98, 0.32); }
+    .privacy { text-align: center; color: #f3e3c7; font-size: 0.84rem; margin-top: 13px; text-shadow: 0 1px 10px rgba(0,0,0,0.35); }
+
+    .showroom-card {
+      margin-top: -42px;
+      position: relative;
+      z-index: 2;
+    }
+    .showroom-visual {
+      min-height: 360px;
+      border-radius: var(--radius-xl);
+      overflow: hidden;
+      background:
+        linear-gradient(135deg, rgba(13,17,16,0.08), rgba(13,17,16,0.32)),
+        radial-gradient(circle at 50% 0%, rgba(246,216,148,0.55), transparent 24rem),
+        linear-gradient(135deg, #e7dccd, #a08e76 50%, #322a23);
+      box-shadow: var(--shadow);
+      border: 1px solid rgba(255,255,255,0.5);
+      position: relative;
+      display: grid;
+      place-items: center;
+      isolation: isolate;
+    }
+    .showroom-visual::before,
+    .showroom-visual::after {
+      content: "";
+      position: absolute;
+      border-radius: 999px;
+      background: rgba(255,255,255,0.18);
+      filter: blur(1px);
+      z-index: -1;
+    }
+    .showroom-visual::before { width: 58%; height: 24px; top: 62px; left: 21%; box-shadow: 0 64px 80px rgba(255,255,255,0.17); }
+    .showroom-visual::after { width: 220px; height: 220px; right: 9%; bottom: -72px; border: 1px solid rgba(255,255,255,0.24); background: rgba(255,255,255,0.06); }
+    .pendant {
+      position: absolute;
+      top: 0;
+      width: 1px;
+      height: 145px;
+      background: rgba(255,255,255,0.58);
+    }
+    .pendant.one { left: 28%; height: 130px; }
+    .pendant.two { left: 50%; height: 170px; }
+    .pendant.three { left: 72%; height: 115px; }
+    .pendant::after {
+      content: "";
+      position: absolute;
+      left: 50%;
+      bottom: -27px;
+      transform: translateX(-50%);
+      width: 88px;
+      height: 54px;
+      border-radius: 0 0 70px 70px;
+      background: linear-gradient(180deg, rgba(247,242,234,0.86), rgba(215,173,98,0.34));
+      box-shadow: 0 38px 60px rgba(246,216,148,0.55);
+    }
+    .image-placeholder {
+      max-width: 550px;
+      padding: 28px;
+      margin: 190px 20px 30px;
+      border-radius: 24px;
+      background: rgba(12,17,16,0.66);
+      border: 1px solid rgba(255,255,255,0.22);
+      color: var(--text);
+      text-align: center;
+      backdrop-filter: blur(18px);
+    }
+    .image-placeholder strong { display: block; font-size: clamp(1.16rem, 3vw, 1.9rem); font-family: "Playfair Display", Georgia, serif; margin-bottom: 8px; }
+    .image-placeholder span { color: var(--gold-light); font-weight: 800; }
+
+    section { padding: 94px 0; }
+    .section-heading { max-width: 760px; margin-bottom: 34px; }
+    .kicker { color: var(--green); font-weight: 900; letter-spacing: 0.12em; font-size: 0.78rem; text-transform: uppercase; margin-bottom: 12px; }
+    h2 {
+      font-family: "Playfair Display", Georgia, serif;
+      font-size: clamp(2rem, 4vw, 3.45rem);
+      letter-spacing: -0.035em;
+      line-height: 1.05;
+      margin-bottom: 14px;
+    }
+    .section-heading p { color: var(--muted-dark); line-height: 1.8; font-size: 1.05rem; }
+
+    .benefits-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 18px;
+    }
+    .benefit-card {
+      background: var(--card-light);
+      border: 1px solid rgba(24,35,31,0.1);
+      border-radius: var(--radius-lg);
+      padding: 25px;
+      box-shadow: 0 18px 50px rgba(57,45,29,0.08);
+      min-height: 248px;
+      transition: transform .2s, box-shadow .2s, border-color .2s;
+    }
+    .benefit-card:hover { transform: translateY(-5px); box-shadow: 0 24px 64px rgba(57,45,29,0.13); border-color: rgba(215,173,98,0.42); }
+    .icon {
+      width: 48px;
+      height: 48px;
+      border-radius: 16px;
+      display: grid;
+      place-items: center;
+      background: #f4ead8;
+      color: var(--green);
+      font-size: 1.38rem;
+      margin-bottom: 18px;
+    }
+    .benefit-card h3 { font-size: 1.08rem; line-height: 1.28; margin-bottom: 11px; }
+    .benefit-card p { color: var(--muted-dark); line-height: 1.68; font-size: 0.95rem; }
+
+    .offer {
+      background: #111816;
+      color: var(--text);
+      position: relative;
+      overflow: hidden;
+    }
+    .offer::before {
+      content: "";
+      position: absolute;
+      width: 680px;
+      height: 680px;
+      border-radius: 50%;
+      right: -240px;
+      top: -260px;
+      background: radial-gradient(circle, rgba(215,173,98,0.22), transparent 62%);
+    }
+    .offer .section-heading p { color: var(--muted); }
+    .process-flow-label {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      margin: 6px 0 18px;
+      color: var(--gold-light);
+      font-weight: 900;
+      letter-spacing: 0.02em;
+    }
+    .process {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 16px;
+      position: relative;
+      margin: 38px 0;
+    }
+    .process-step {
+      padding: 24px;
+      border: 1px solid rgba(255,255,255,0.12);
+      border-radius: var(--radius-lg);
+      background: rgba(255,255,255,0.06);
+      backdrop-filter: blur(14px);
+      position: relative;
+      min-height: 150px;
+    }
+    .process-step:not(:last-child)::after {
+      content: "→";
+      position: absolute;
+      right: -21px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--gold-light);
+      font-size: 1.7rem;
+      z-index: 2;
+    }
+    .process-number {
+      color: var(--gold-light);
+      font-weight: 900;
+      font-size: 0.78rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      margin-bottom: 14px;
+    }
+    .process-step h3 { font-size: 1.25rem; margin-bottom: 8px; }
+    .process-step p { color: var(--muted); line-height: 1.68; }
+    .steps-list {
+      display: grid;
+      grid-template-columns: 0.85fr 1.15fr;
+      gap: 30px;
+      align-items: start;
+      margin-top: 42px;
+    }
+    .steps-list h3 { font-family: "Playfair Display", Georgia, serif; font-size: 2rem; line-height: 1.1; }
+    .steps-copy { display: grid; gap: 14px; }
+    .service-step {
+      border-left: 2px solid var(--gold);
+      padding: 2px 0 2px 18px;
+      color: var(--muted);
+      line-height: 1.7;
+    }
+    .service-step strong { color: var(--text); }
+
+    .social-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 20px;
+    }
+    .testimonial {
+      background: #fffaf2;
+      border: 1px solid rgba(24,35,31,0.1);
+      border-radius: var(--radius-lg);
+      padding: 28px;
+      box-shadow: 0 18px 50px rgba(57,45,29,0.08);
+      position: relative;
+    }
+    .testimonial::before {
+      content: "“";
+      position: absolute;
+      top: 2px;
+      right: 24px;
+      color: rgba(215,173,98,0.24);
+      font-family: "Playfair Display", Georgia, serif;
+      font-size: 6rem;
+      line-height: 1;
+    }
+    blockquote { color: #3b3934; line-height: 1.8; font-size: 1.02rem; margin-bottom: 20px; position: relative; z-index: 1; }
+    cite { display: block; font-style: normal; color: var(--green-dark); font-weight: 900; }
+
+    .final-cta { padding-bottom: 50px; }
+    .cta-panel {
+      border-radius: 34px;
+      padding: clamp(32px, 6vw, 68px);
+      background:
+        radial-gradient(circle at 14% 20%, rgba(215,173,98,0.24), transparent 21rem),
+        linear-gradient(135deg, #14201c, #0c1110 62%, #243d2f);
+      color: var(--text);
+      box-shadow: var(--shadow);
+      border: 1px solid rgba(215,173,98,0.22);
+      display: grid;
+      grid-template-columns: 1fr 330px;
+      gap: 28px;
+      align-items: center;
+    }
+    .cta-panel h2 { margin-bottom: 16px; }
+    .cta-panel p { color: var(--muted); line-height: 1.78; max-width: 660px; }
+    .whatsapp {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 60px;
+      border-radius: 999px;
+      padding: 0 25px;
+      color: #fff;
+      background: linear-gradient(135deg, #38b76f, #1f7a4a);
+      font-weight: 900;
+      box-shadow: 0 20px 40px rgba(31,122,74,0.28);
+      text-align: center;
+    }
+    .cta-small { margin-top: 13px; font-size: 0.92rem; color: #d7cbb9; text-align: center; }
+
+    footer { padding: 28px 0 42px; color: #7a7164; font-size: 0.92rem; }
+    footer .container { display: flex; justify-content: space-between; gap: 18px; flex-wrap: wrap; }
+
+    @media (max-width: 980px) {
+      .hero-grid, .steps-list, .cta-panel { grid-template-columns: 1fr; }
+      .lead-form { max-width: 620px; }
+      .showroom-card { margin-top: -20px; }
+      .benefits-grid { grid-template-columns: repeat(2, 1fr); }
+      .process { grid-template-columns: 1fr; }
+      .process-step:not(:last-child)::after { content: "↓"; right: 24px; top: auto; bottom: -26px; transform: none; }
+      .cta-panel .whatsapp { width: 100%; }
+      .cta-small { text-align: left; }
+    }
+
+    @media (max-width: 680px) {
+      .container { width: min(100% - 28px, var(--max)); }
+      .nav { padding: 18px 0; align-items: flex-start; }
+      .nav-note { display: none; }
+      .hero { padding: 24px 0 52px; }
+      h1 { font-size: clamp(2.25rem, 12vw, 3.85rem); }
+      .lead-form { padding: 20px; border-radius: 24px; }
+      .showroom-visual { min-height: 300px; }
+      .image-placeholder { margin-top: 160px; padding: 20px; }
+      section { padding: 68px 0; }
+      .benefits-grid, .social-grid { grid-template-columns: 1fr; }
+      .benefit-card { min-height: auto; }
+      .trust-row { gap: 8px; }
+      .trust-pill { font-size: 0.82rem; padding: 9px 11px; }
+      footer .container { display: block; }
+      footer p + p { margin-top: 8px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="page-shell">
+    <div class="top-section" id="top">
+      <header class="container nav" aria-label="Topo da página">
+        <a class="brand" href="#top" aria-label="Só Lustres">
+          <span class="brand-mark" aria-hidden="true"></span>
+          <span>Só Lustres</span>
+        </a>
+        <p class="nav-note">Casa Shopping · Consultoria luminotécnica gratuita</p>
+      </header>
+
+      <section class="hero">
+        <div class="container hero-grid">
+          <div>
+            <div class="section-tag">SEÇÃO 1: DOBRA PRINCIPAL / HERO SECTION</div>
+            <h1>Iluminação de Alto Padrão que <span>Transforma sua Casa.</span> Design Exclusivo com Preço Acessível e Assessoria de Especialistas.</h1>
+            <p class="hero-copy">Valorizar a elegância, exclusividade e a facilidade de criar o ambiente dos sonhos sem pagar a mais por isso.</p>
+            <p class="subheadline"><span class="pin" aria-hidden="true">⌂</span> Visite nosso novo Showroom no Casa Shopping ou agende uma consultoria luminotécnica gratuita online para o seu projeto.</p>
+            <div class="trust-row" aria-label="Diferenciais rápidos">
+              <span class="trust-pill">20 anos de credibilidade</span>
+              <span class="trust-pill">Design exclusivo</span>
+              <span class="trust-pill">Compra direto, sem intermediários</span>
+            </div>
+          </div>
+
+          <form class="lead-form" action="#" method="post">
+            <h2 class="form-title">FORMULÁRIO DE CAPTURA - CTA</h2>
+            <div class="field">
+              <label for="nome">Nome</label>
+              <input id="nome" name="nome" type="text" placeholder="Seu nome completo" autocomplete="name" required />
+            </div>
+            <div class="field">
+              <label for="whatsapp">WhatsApp</label>
+              <input id="whatsapp" name="whatsapp" type="tel" placeholder="(21) 99999-9999" autocomplete="tel" required />
+            </div>
+            <div class="field">
+              <label for="interesse">Tipo de projeto ou interesse</label>
+              <select id="interesse" name="interesse" required>
+                <option value="">Selecione uma opção</option>
+                <option>Obra ou reforma residencial</option>
+                <option>Projeto luminotécnico completo</option>
+                <option>Peça de design exclusiva</option>
+                <option>Parceria para arquitetos</option>
+              </select>
+            </div>
+            <button class="cta" type="submit">GARANTIR CONSULTORIA GRATUITA</button>
+            <p class="privacy">🔒 Prometemos não enviar spam.</p>
+          </form>
+        </div>
+      </section>
+    </div>
+
+    <main>
+      <div class="container showroom-card" aria-label="Imagem principal provisória">
+        <div class="showroom-visual">
+          <span class="pendant one" aria-hidden="true"></span>
+          <span class="pendant two" aria-hidden="true"></span>
+          <span class="pendant three" aria-hidden="true"></span>
+          <div class="image-placeholder">
+            <strong>Imagem Principal do Showroom / Peça de Design Exclusiva</strong>
+            <span>Exemplo: Linha Pedro Galaso</span>
+          </div>
+        </div>
+      </div>
+
+      <section class="benefits" id="beneficios">
+        <div class="container">
+          <div class="section-heading">
+            <div class="section-tag">SEÇÃO 2: BENEFÍCIOS E DIFERENCIAIS COMPETITIVOS</div>
+            <h2>Por que escolher a Só Lustres?</h2>
+            <p>Foco em desmistificar a percepção de que a loja física no Casa Shopping possui preços proibitivos para o consumidor final, destacando as vantagens de comprar direto.</p>
+          </div>
+          <div class="benefits-grid">
+            <article class="benefit-card">
+              <div class="icon" aria-hidden="true">✦</div>
+              <h3>Peças de Design Exclusivo</h3>
+              <p>Acesso direto a linhas assinadas por designers renomados de forma exclusiva, garantindo sofisticação única para o seu ambiente.</p>
+            </article>
+            <article class="benefit-card">
+              <div class="icon" aria-hidden="true">$</div>
+              <h3>Preço Justo e Sem Intermediários</h3>
+              <p>Produtos elegantes com valores altamente competitivos e planos acessíveis diretamente para o consumidor final.</p>
+            </article>
+            <article class="benefit-card">
+              <div class="icon" aria-hidden="true">⌁</div>
+              <h3>Assessoria Técnica Especializada</h3>
+              <p>Equipe experiente com mais de 15 anos de mercado pronta para validar a planta baixa e otimizar a distribuição de pontos de luz.</p>
+            </article>
+            <article class="benefit-card">
+              <div class="icon" aria-hidden="true">◆</div>
+              <h3>20 Anos de Credibilidade</h3>
+              <p>Tradição e solidez no maior shopping de decoração da América Latina, assegurando garantia real e pós-venda premium.</p>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section class="offer" id="oferta">
+        <div class="container">
+          <div class="section-heading">
+            <div class="section-tag">SEÇÃO 3: DETALHAMENTO DA OFERTA</div>
+            <h2>A Solução Perfeita para a sua Obra ou Reforma</h2>
+            <p>Apresentação clara da mecânica da oferta para atrair tanto clientes finais quanto novos arquitetos parceiros que buscam agilidade e precisão técnica.</p>
+          </div>
+
+          <div class="process-flow-label" aria-label="Diagrama do processo">Planta Baixa → Consultoria → Entrega Protegida</div>
+          <div class="process" aria-label="Planta Baixa → Consultoria → Entrega Protegida">
+            <div class="process-step">
+              <p class="process-number">01</p>
+              <h3>Planta Baixa</h3>
+              <p>Você envia a base do projeto, referências ou ideias gerais do ambiente.</p>
+            </div>
+            <div class="process-step">
+              <p class="process-number">02</p>
+              <h3>Consultoria</h3>
+              <p>Especialistas validam pontos de luz, peças, LEDs e harmonia visual.</p>
+            </div>
+            <div class="process-step">
+              <p class="process-number">03</p>
+              <h3>Entrega Protegida</h3>
+              <p>Materiais etiquetados por cômodo para facilitar a execução na obra.</p>
+            </div>
+          </div>
+
+          <div class="steps-list">
+            <h3>Como funciona o nosso atendimento:</h3>
+            <div class="steps-copy">
+              <p class="service-step"><strong>Envio do Briefing:</strong> Você traz a sua planta de iluminação ou ideias gerais do ambiente.</p>
+              <p class="service-step"><strong>Análise de Viabilidade:</strong> Nossos especialistas avaliam o quantitativo, tipo de LED, acrílico e harmonia visual.</p>
+              <p class="service-step"><strong>Logística Separada por Ambiente:</strong> O material chega na sua obra totalmente etiquetado e organizado por cômodo, eliminando a tradicional confusão de peças misturadas.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="social-proof" id="depoimentos">
+        <div class="container">
+          <div class="section-heading">
+            <div class="section-tag">SEÇÃO 4: PROVA SOCIAL / GARANTIA DE SATISFAÇÃO</div>
+            <h2>Quem já transformou ambientes com a Só Lustres</h2>
+            <p>Depoimentos focados na experiência de pós-venda diferenciada e na facilidade de fechamento de orçamentos completos.</p>
+          </div>
+          <div class="social-grid">
+            <article class="testimonial">
+              <blockquote>“Sempre tive receio de comprar em showrooms fechados achando que o valor seria absurdo. Na Só Lustres, além de encontrar o pendente exclusivo que eu queria, o atendimento da gerente validou toda a iluminação da minha sala. Economizei e o resultado ficou incrível!”</blockquote>
+              <cite>Mariana S., Cliente Final - Barra da Tijuca - RJ</cite>
+            </article>
+            <article class="testimonial">
+              <blockquote>“A entrega separada e organizada por cômodos facilitou muito o trabalho dos meus eletricistas na obra. O pós-venda deles é o melhor do Rio de Janeiro.”</blockquote>
+              <cite>Carlos Eduardo, Arquiteto Parceiro</cite>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section class="final-cta" id="contato">
+        <div class="container">
+          <div class="cta-panel">
+            <div>
+              <div class="section-tag">SEÇÃO 5: CHAMADA FINAL PARA AÇÃO / FOOTER CTA</div>
+              <h2>Pronto para valorizar o seu imóvel?</h2>
+              <p>Não deixe a escolha da iluminação para a última hora. Garanta agora mesmo uma consultoria técnica gratuita com nossos especialistas e evite erros caros na sua obra.</p>
+            </div>
+            <div>
+              <a class="whatsapp" href="https://wa.me/5521999999999?text=Ol%C3%A1%2C%20quero%20agendar%20uma%20consultoria%20luminot%C3%A9cnica%20gratuita%20com%20a%20S%C3%B3%20Lustres" target="_blank" rel="noopener">FALAR COM ESPECIALISTA VIA WHATSAPP</a>
+              <p class="cta-small">Ou preencha o formulário no topo para agendar um horário exclusivo no Showroom.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer>
+      <div class="container">
+        <p>© Só Lustres · Wireframe de landing page para validação comercial.</p>
+        <p>Casa Shopping · Iluminação de alto padrão</p>
+      </div>
+    </footer>
+  </div>
+</body>
+</html>
